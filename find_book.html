@@ -1,0 +1,44 @@
+{% extends "base.html" %} {% block title %} Find Book  {% endblock %}
+
+{% block nav %}
+<div class="nav_bar">
+    <a href="/find-book" class="nav_button">Find book</a>
+    <a href="/sign-up" class="nav_button">Sign Up</a>
+    <a href="/log-in" class="nav_button">Log In</a>
+    <a href="/about-us" class="nav_button">About Us</a>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if found_books != None %}
+    <div class="content">
+        <table>
+            <tr>
+                <td>ID</td>
+                <td>Name</td>
+                <td>Author</td>
+                <td>Genre</td>
+            </tr>
+
+            {% for book in found_books %}
+            <tr>
+                <td class="id">{{book[0]}}</td>
+                <td class="book_name">{{book[1]}}</td>
+                <td class="author">{{book[2]}}</td>
+                <td class="genre">{{book[3]}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% else %}
+    <div class="content">
+        <h1 class="title">Find Book</h1>
+
+        <form action="/find-book" method="post">
+            <input type="text" name="books" placeholder="Type here....">
+            <input type="submit" value="Search">
+        </form>
+        
+    </div>
+{% endif %}
+{% endblock %}
