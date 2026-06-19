@@ -1,0 +1,48 @@
+{% extends "base.html" %} {% block title %} About Us {% endblock %}
+
+{% block nav %}
+<nav>
+    <a href="/find-book" class="nav_button">Find book</a>
+    {% if user == None %}
+    <a href="/sign-up" class="nav_button">Sign Up</a>
+    <a href="/log-in" class="nav_button">Log In</a>
+    {% else %}
+    <a href="/checkout" class="nav_button">Check Out Book</a>
+    <details class="nav_button">
+        <summary>{{ user }}</summary>
+        <a href="/logout">Log Out</a>
+    </details>
+    {% endif %}
+    <a href="/about-us" class="nav_button">About Us</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h1 class="title">Batavia Library</h1>
+    <h2 class="introduction">About Us</h2>
+    <p>Batavia Library was built in the 1800s by several local scholar. 
+        This library was mainly used to help the local people who could not receive education from the colonial policy. 
+        Now, this library has helped millions of people reaching their dream and can be accessed online.
+    </p>
+    <div class="faq">
+        <h2>How to checkout books in here?</h2>
+        <p> You can checkout book if you are logged in. 
+            Then, just head at the navigator bar at the top and click it. 
+            Then you just need to type in the book and your address so your book can be sent.
+        </p>
+    </div>
+    <div class="faq">
+        <h2>Will it costs me to deliver the book?</h2>
+        <p> Our library is working with countless of volunteers who are willing to send your books. 
+            This is to ensure that our library is still accessible to everyone
+        </p>
+    </div>
+    <div class="faq">
+        <h2>Can I checkout multiple books?</h2>
+        <p> You can. However, our current system can only handle one book at a time. 
+            So you will need to checkout the books multiple time.
+        </p>
+    </div>
+</div>
+{% endblock %}
