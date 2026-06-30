@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block title %} Sign Up {% endblock %}
+
+{% block nav %}
+<div class="nav_bar">
+    <a href="/find-book" class="nav_button">Find book</a>
+    <a href="/sign-up" class="nav_button">Sign Up</a>
+    <a href="/log-in" class="nav_button">Log In</a>
+    <a href="/about-us" class="nav_button">About Us</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h1 class="title">Sign Up</h1>
+
+    <form action="/input_new_user" method="post">
+        <input type="text" name="username" placeholder="Username">
+        <input type="text" name="password" placeholder="Password - 5 to 16 characters">
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock %}
