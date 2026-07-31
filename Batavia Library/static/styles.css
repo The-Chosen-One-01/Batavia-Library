@@ -1,0 +1,39 @@
+body {
+  background-image: url('Batavia_bg.png');
+  font-family: 'gelasio';
+}
+
+.nav_bar {
+  padding-bottom: 0.5cm;
+  padding-top:0.5cm;
+  padding-left: 150;
+  padding-right: 150;
+  background-color: black;
+}
+
+.nav_button {
+  color: white;
+  font-size: 25px;
+  margin-right: 125px;
+  margin-left: 125px;
+  text-decoration: none;
+}
+
+.content {
+  margin: auto;
+  margin-top: 3cm;
+  width: 18cm;
+  height: 10cm;
+  padding-top: 1cm;
+  padding-bottom: 1cm;
+  padding-right: 1.25cm;
+  padding-left: 1.25cm;
+  color: white;
+  font-size: 30px;
+  background-color: black;
+}
+
+.title {
+  text-align: center;
+}
+  
