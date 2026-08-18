@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% block title %} Checkout Successful  {% endblock %}
+
+{% block nav %}
+<div class="nav_bar">
+    <a href="/find-book" class="nav_button">Find book</a>
+    <details class="nav_button">
+        <summary>Checkout Book</summary>
+        <a href="/checkout" class="nav_button" class="dropdown">Check Out Book</a>
+        <a href="/return" class="dropdown">Return Book</a>
+    </details>
+    
+    <details class="nav_button">
+        <summary>{{ user }}</summary>
+        <a href="/logout" class="dropdown">Log Out</a>
+    </details>
+    <a href="/about-us" class="nav_button">About Us</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h1 class="title">Checkout Successful</h1>
+    <h2 class="introduction">Thank you for checkout a book.</h2>
+    <a href="/" class="go_back">Go back to Homepage?</a>
+</div>
+
+{% endblock %}
