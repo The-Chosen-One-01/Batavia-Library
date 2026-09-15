@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block title %} About Us {% endblock %}
+
+{% block nav %}
+<div class="nav_bar">
+    <a href="/find-book" class="nav_button">Find book</a>
+    {% if user == None %}
+    <a href="/sign-up" class="nav_button">Sign Up</a>
+    <a href="/log-in" class="nav_button">Log In</a>
+    {% else %}
+    <details class="nav_button">
+        <summary>Check Out Book</summary>
+        <a href="/checkout" class="dropdown">Check Out Book</a>
+        <a href="/return" class="dropdown">Return Book</a>
+    </details>
+    <details class="nav_button">
+        <summary>{{ user }}</summary>
+        <a href="/logout" class="dropdown">Log Out</a>
+    </details>    {% endif %}
+    <a href="/about-us" class="nav_button">About Us</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h1 class="title">404 Error: Page Not Found</h1>
+    <h2 class="introduction">Page you are looking for does not exist</h2>
+    <a href="/" class="go_back">Go back to Homepage?</a>
+</div>
+{% endblock %}
