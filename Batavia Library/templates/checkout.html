@@ -1,0 +1,71 @@
+{% extends "base.html" %} {% block title %} Checkout Books {% endblock %}
+
+{% block nav %}
+<div class="nav_bar">
+    <a href="/find-book" class="nav_button">Find book</a>
+    <details class="nav_button">
+        <summary>Check Out Book</summary>
+        <a href="/checkout" class="dropdown">Check Out Book</a>
+        <a href="/return" class="dropdown">Return Book</a>
+    </details>
+    <details class="nav_button">
+        <summary>{{ user }}</summary>
+        <a href="/logout" class="dropdown">Log Out</a>
+    </details>
+    <a href="/about-us" class="nav_button">About Us</a>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if condition == 'before' or condition == 'partial_failed' %}
+<div class="content" style="height: auto; min-height: 10cm;">
+    <h1 class="title">Checkout Book</h1>
+
+    <!-- Manual Text Cart Addition -->
+    <form action="/add-to-cart" method="post" style="margin-bottom: 30px;">
+        <input type="text" name="book" placeholder="Type book name to add..." required>
+        <input type="submit" value="Add to Cart" style="color: black;">
+    </form>
+
+    {% if condition == 'partial_failed' %}
+        <p style="color: #ff4d4d; text-align: center; font-size: 18px;">
+            Warning: The following items could not be processed: <br>
+            <strong>{{ failed_books | join(', ') }}</strong>
+        </p>
+    {% endif %}
+
+    <div style="width: 100%; margin-top: 20px;">
+        {% if cart_items %}
+            <h3 style="font-size: 22px; border-bottom: 1px solid #444; padding-bottom: 5px;">Items in Cart ({{ cart_items|length }}):</h3>
+            <ul style="list-style: none; padding: 0;">
+                {% for item in cart_items %}
+                    <li style="display: flex; justify-content: space-between; align-items: center; background: #222; padding: 10px 15px; margin-bottom: 8px; border-radius: 5px; font-size: 20px;">
+                        <span>{{ item }}</span>
+                        <a href="/remove-from-cart/{{ item }}" style="color: #ff4d4d; text-decoration: none; font-size: 16px;">[Remove]</a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Process Full Array Order Request -->
+            <form action="/checkout" method="post" style="margin-top: 30px;">
+                <p style="font-size: 18px; margin-bottom: 5px; color: #bbb;">Delivery Address:</p>
+                <input type="text" name="address" placeholder="Enter delivery address" required>
+                <input type="submit" value="Confirm Bulk Checkout" style="background-color: green; color: white; margin-top: 15px;">
+            </form>
+        {% else %}
+            <p style="text-align: center; color: #888; font-size: 20px; margin-top: 40px;">Your cart is completely empty.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% elif condition == 'after' %}
+<div class="content">
+    <h1 class="title">Checkout Successful!</h1>
+    <p style="text-align: center; font-size: 22px; margin-top: 40px;">Thank you for checking out a book.</p>
+    <p style="text-align: center; font-size: 18px; color: #ccc;">Please return them by: <strong>{{ return_date }}</strong></p>
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="/" class="go_back">Back to Home</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
