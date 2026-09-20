@@ -117,7 +117,7 @@ def similarity_ratio(book1, book2):
         return 1.0
     return SequenceMatcher(None, book1.lower().strip(), book2.lower().strip()).ratio()
 
-# --- COMMERCE-STYLE CART SYSTEM ---
+# --- CART SYSTEM FOR BORROWING ---
 @app.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
     if 'user' not in session:
@@ -235,12 +235,33 @@ def process_return(book, user):
         db.close()
         return 'failed'
     
-    query = "INSERT INTO return (user_ID, book_ID, return_date) VALUES (?, ?, ?);"
-    cursor.execute(query, (all_IDs[0], all_IDs[1], clock()[0]))
+    user_id, book_id, genre_id = all_IDs
+
+    # Checking if the user is currently borrowing this book
+    cursor.execute(
+        "SELECT ID FROM borrow WHERE user_ID = ? AND book_ID = ? LIMIT 1;", 
+        (user_id, book_id)
+    )
+    borrow_record = cursor.fetchone()
+
+    # If book is not borrowed, then the return will fail
+    if not borrow_record:
+        db.close()
+        return 'failed' # User never borrowed this book or already returned it!
+        
+    borrow_id = borrow_record[0]
+
+    # Putting the return detail onto the 'return' table
+    query_return = "INSERT INTO return (user_ID, book_ID, return_date) VALUES (?, ?, ?);"
+    cursor.execute(query_return, (user_id, book_id, clock()[0]))
+    
+    # Deleting the old borrow return detail
+    cursor.execute("DELETE FROM borrow WHERE ID = ?;", (borrow_id,))
+
     db.commit()
     db.close()
     return 'after'
-    
+
 @app.route('/logout')
 def logout():
     session.pop('user', None)
