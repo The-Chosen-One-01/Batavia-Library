@@ -1,32 +1,42 @@
+# The code below is the flask code of the library
+
+#Importing necessary modules
 from flask import Flask, render_template, redirect, request, session
 import sqlite3
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
 
+#Initialising constants
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'iamthegoat'
 DATABASE = 'batavia_library.db'
 
+# --- Main app router function --- 
 @app.route('/')
 def home():
     user = session.get('user')
     return render_template("home.html", user=user)
 
+# --- 404 Error handler (no page is found) --- 
 @app.errorhandler(404)
 def page_not_found(e):
     user = session.get('user')
     return render_template("404_error.html", user=user)
 
+# --- About us router ---
 @app.route('/about-us')
 def about_us():
     user = session.get('user')
     return render_template("about_us.html", user=user)
 
-# --- SIGN UP PAGE & PROCESSING ---
+# --- Sign up and data processing ---
+
+# Sign up page router
 @app.route('/sign-up')
 def sign_up():
     return render_template('sign_up.html')
 
+# Adding new user to the database
 @app.post('/input_new_user')
 def add_new_user():
     username = str(request.form['username'])
@@ -47,6 +57,7 @@ def add_new_user():
     session['user'] = username
     return redirect('/')
 
+# Finding user that has the same username as the new user
 def find_user(user):
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
@@ -56,25 +67,41 @@ def find_user(user):
     db.close()
     return user_data is not None
 
-# --- LOG IN DATA HANDLING ---
+# Enrypting password for both signing up and logging in
+def encrypt(password):
+    return ''.join(chr(ord(i) + 1) for i in password)
+
+# --- Log in and data handling ---
+
+# Log in page router
 @app.route('/log-in', methods=['GET', 'POST'])
 def login():
     warning = None
     if request.method == 'POST':
         username = str(request.form.get('username', ''))
         password = str(request.form.get('password', ''))
-        verify = verification(username, password)
-        
-        if verify is True:
-            session['user'] = username
-            return redirect('/')
-        elif verify == 'No Account':
-            warning = 'No Account'
-        else:
-            warning = 'Wrong Information'
-            
-    return render_template('login.html', warning=warning)
+        result = handle_login_data(username, password)
 
+        if result == 'valid':
+            return redirect('/')
+            
+    return render_template('login.html', warning=result)
+
+# Log in data handling
+def handle_login_data(username, password):
+    verify = verification(username, password)
+
+    if verify:
+        session['user'] = username
+        result = 'valid'
+    elif verify == 'No Account':
+        result = 'No Account'
+    else:
+        result = 'Wrong Information'
+
+    return result
+
+# Log in data verification
 def verification(username, password):
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
@@ -91,7 +118,16 @@ def verification(username, password):
         return True
     return "Wrong Information"
 
+# --- Log Out ---
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    session.pop('cart', None)
+    return redirect('/')
+    
 # --- FIND & SEARCH BOOKS ---
+
+# Find book page router
 @app.route('/find-book', methods=['GET', 'POST'])
 def find_book():
     user = session.get('user')
@@ -99,17 +135,25 @@ def find_book():
     book = None
     if request.method == 'POST':
         book = str(request.form['books'])
-        db = sqlite3.connect(DATABASE)
-        db.create_function("SIMILARITY", 2, similarity_ratio)
-        cursor = db.cursor()
-        query = "SELECT books.ID, book_name, author, genre.genre FROM books LEFT JOIN genre ON books.genre_ID = genre.ID WHERE SIMILARITY(book_name, ?) > 0.6;"
-        cursor.execute(query, (book,))
-        found_books = cursor.fetchall()
-        db.close()
+        found_books = handle_search_result(book)
+        
         if not found_books:
-            return render_template('find_book.html', found_books=None, user=user, failed=book)  
+            return render_template('find_book.html', found_books=None, user=user, failed=book)
+            
     return render_template('find_book.html', found_books=found_books, user=user, book=book if request.method == 'POST' else None, failed=None)
 
+# Handle search result
+def handle_search_result(book):
+    db = sqlite3.connect(DATABASE)
+    db.create_function("SIMILARITY", 2, similarity_ratio)
+    cursor = db.cursor()
+    query = "SELECT books.ID, book_name, author, genre.genre FROM books LEFT JOIN genre ON books.genre_ID = genre.ID WHERE SIMILARITY(book_name, ?) > 0.6;"
+    cursor.execute(query, (book,))
+    found_books = cursor.fetchall()
+    db.close()
+    return found_books
+
+# Finding the similarity between the searched book and the actual book
 def similarity_ratio(book1, book2):
     if not book1 or not book2:
         return 0.0
@@ -117,7 +161,9 @@ def similarity_ratio(book1, book2):
         return 1.0
     return SequenceMatcher(None, book1.lower().strip(), book2.lower().strip()).ratio()
 
-# --- CART SYSTEM FOR BORROWING ---
+# --- Cart handling system ---
+
+# Adding book to cart
 @app.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
     if 'user' not in session:
@@ -132,6 +178,7 @@ def add_to_cart():
             session['cart'] = cart
     return redirect('/checkout')
 
+# Adding searched book to cart (from find book)
 @app.route('/add-to-cart-link')
 def add_to_cart_link():
     if 'user' not in session:
@@ -146,6 +193,7 @@ def add_to_cart_link():
             session['cart'] = cart
     return redirect('/checkout')
 
+# Removing book from cart
 @app.route('/remove-from-cart/<book_name>')
 def remove_from_cart(book_name):
     if 'cart' in session:
@@ -155,7 +203,7 @@ def remove_from_cart(book_name):
             session['cart'] = cart
     return redirect('/checkout')
 
-# --- BULK CHECKOUT PROCESSING ---
+# --- Checkout processing ---
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     dates = clock()
@@ -213,6 +261,12 @@ def find_IDs_with_cursor(cursor, username, book):
     except Exception:
         return False
 
+def clock():
+    today = datetime.now()
+    a_month = today + timedelta(weeks=4)
+    return (today.strftime("%d-%m-%Y"), a_month.strftime("%d-%m-%Y")) 
+
+
 # --- PROCESSING RETURN ---
 @app.route('/return', methods=['GET', 'POST'])
 def return_books():
@@ -261,20 +315,7 @@ def process_return(book, user):
     db.commit()
     db.close()
     return 'after'
-
-@app.route('/logout')
-def logout():
-    session.pop('user', None)
-    session.pop('cart', None)
-    return redirect('/')
-
-def encrypt(password):
-    return ''.join(chr(ord(i) + 1) for i in password)
-
-def clock():
-    today = datetime.now()
-    a_month = today + timedelta(weeks=4)
-    return (today.strftime("%d-%m-%Y"), a_month.strftime("%d-%m-%Y"))  
+ 
 
 if __name__ == '__main__':
     app.run(debug=True)
