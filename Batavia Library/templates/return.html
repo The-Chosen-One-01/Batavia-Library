@@ -28,8 +28,7 @@
     <p>There is no book: </p> {{ failed }}
     {% endif %}
 </div>
-
-{% elif condition == 'failed' %}
+{% elif condition == 'no book' %}
 <div class="content">
     <h1 class="title">Return Book</h1>
 
@@ -37,7 +36,7 @@
         <input type="text" name="book" placeholder="Book name">
         <input type="submit" value="Submit">
     </form>
-    <p>There is no book: </p> {{ failed }}
+    <p>You are not currently borrowing </p> {{ failed }}
 </div>
 {% else %}
 <div class="content">
@@ -46,4 +45,4 @@
     <a href="/" class="go_back">Go back to Homepage?</a>
 </div>
 {% endif %}
-{% endblock %}x
+{% endblock %}
