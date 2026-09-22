@@ -76,7 +76,7 @@ def encrypt(password):
 # Log in page router
 @app.route('/log-in', methods=['GET', 'POST'])
 def login():
-    warning = None
+    result = None
     if request.method == 'POST':
         username = str(request.form.get('username', ''))
         password = str(request.form.get('password', ''))
