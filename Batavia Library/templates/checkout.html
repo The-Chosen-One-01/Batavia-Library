@@ -32,6 +32,7 @@
             Warning: The following items could not be processed: <br>
             <strong>{{ failed_books | join(', ') }}</strong>
         </p>
+        <p style="color: #ff4d4d; text-align: center; font-size: 18px;">The book(s) might not exist or check the spelling</p>
     {% endif %}
 
     <div style="width: 100%; margin-top: 20px;">
@@ -46,7 +47,7 @@
                 {% endfor %}
             </ul>
 
-            <!-- Process Full Array Order Request -->
+            <!-- Processing the order -->
             <form action="/checkout" method="post" style="margin-top: 30px;">
                 <p style="font-size: 18px; margin-bottom: 5px; color: #bbb;">Delivery Address:</p>
                 <input type="text" name="address" placeholder="Enter delivery address" required>
