@@ -1,3 +1,4 @@
+/*
 body {
   background-image: url('Batavia_bg.png');
   font-family: 'gelasio';
@@ -6,17 +7,21 @@ body {
 .nav_bar {
   padding-bottom: 0.5cm;
   padding-top:0.5cm;
-  padding-left: 150;
-  padding-right: 150;
+  padding-left: 70px;
+  padding-right: 70px;
   background-color: black;
+  display: flex;       
+  flex-direction: row;
 }
 
 .nav_button {
   color: white;
   font-size: 25px;
-  margin-right: 125px;
-  margin-left: 125px;
+  margin-right: 110px;
+  margin-left: 90px;
   text-decoration: none;
+  display: flex;
+  justify-content: space-between;
 }
 
 .content {
@@ -36,4 +41,424 @@ body {
 .title {
   text-align: center;
 }
+
+.dropdown {
+  display: block;
+  text-decoration: none;
+  color: white;    
+}
+*/
+/*
+body { 
+  background-image: url('Batavia_bg.png'); 
+  background-size: 100%;
+  font-family: 'gelasio'; 
+}
+
+ 1. FLEX CONTAINER: Evenly spaces items without relying on margins 
+.nav_bar {
+  padding: 0.5cm 70px;
+  background-color: black;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; Spreads navigation out elegantly 
+  align-items: center;            Perfectly centers items vertically 
+}
+
+ 2. FLEX ITEMS: Acts as the relative anchor for absolute dropdowns
+.nav_wrapper {
+  position: relative;             ANCHOR: Dropdowns lock onto this container
+  display: inline-block;
+}
+
+.nav_button {
+  color: white;
+  font-size: 25px;
+  text-decoration: none;
+  white-space: nowrap;             FIX: Completely stops "Log Out" from breaking text
+  cursor: pointer;
+  display: block;
+  padding: 10px 20px;
+}
+
+.nav_button:hover {
+  background-color: #222;
+}
+
+ 3. DROPDOWN BOX: Layered perfectly underneath the navigation item 
+.dropdown-content {
+  position: absolute;             Lifts menu up so it floats on top of the screen
+  top: 100%;                      Drops it directly below the text link
+  left: 0;                        Aligns flush with the left side
+  background-color: black;        Blocks underlying background bleed-through
+  min-width: 220px;               Gives text plenty of horizontal room
+  z-index: 100;                   Keeps it safely on top of the main content box
+  display: flex;
+  flex-direction: column;         Vertically stacks dropdown choices
+  padding: 10px 0;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.5); 
+}
+
+.dropdown {
+  display: block;
+  text-decoration: none;
+  color: white;
+  background-color: black;
+  font-size: 20px;
+  padding: 10px 20px;             Clean, easy-to-click target size
+}
+
+Highlights the dropdown row when the mouse moves over it
+.dropdown:hover {
+  background-color: #222;
+}
+
+.content { 
+  margin: auto; 
+  margin-top: 3cm; 
+  width: 18cm; 
+  height: auto; 
+  min-height: 10cm;
+  padding: 1cm 1.25cm;
+  color: white; 
+  font-size: 30px; 
+  background-color: black; 
+} 
+
+.content-about-us {
+  margin: auto;
+  margin-top: 3cm;
+  margin-bottom: 3cm;
+  width: 24cm; Widened slightly so 3 text columns have enough room side-by-side
+  height: auto;
+  min-height: 10cm;
+  padding: 1cm 1.25cm;
+  color: white;
+  background-color: black;
+  box-sizing: border-box;
+
+   Explicitly define 3 equal columns
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 40px; /* Space between the FAQ columns 
+}
+
+  2. Make the header section span across all 3 columns
+.info1 {
+  grid-column: 1 / span 3; Forces it to stretch from column 1 through 3
+  text-align: center;
+  margin-bottom: 1cm;
+}
+
+.info1 h1 {
+  font-size: 45px;
+  margin-bottom: 10px;
+}
+
+.info1 h2 {
+  font-size: 30px;
+  margin-bottom: 15px;
+}
+
+.info1 p {
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 80%;  Keeps the top paragraph nicely contained
+  margin: 0 auto; 
+}
+
+3. The FAQ blocks automatically sit side-by-side in columns 1, 2, and 3
+.info2, .info3, .info4 {
+  display: flex;
+  flex-direction: column;
+}
+
+.info2 h2, .info3 h2, .info4 h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.info2 p, .info3 p, .info4 p {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+
+.title { 
+  text-align: center; 
+}
+
+.row {
+  background-color: white;
+  color: black;
+  position: center;
+}
+
+.table{
+  text-align: center;
+  margin: 0 auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+  margin-left: 4.5cm;
+}
+
+form input[type="text"], 
+form input[type="submit"],
+form input[type="password"] {
+  width: 110%;
+  height: 50px;
+  font-size: 24px;
+  margin-top: 10px;
+  border-radius: 10px 10px 10px 10px;
+}
+
+.go_back {
+  color: white;
+  text-align: center;
+  text-decoration: none;
+}
+*/
+/* --- GLOBAL FIX --- */
+/* Ensures padding and borders are included in the element's total width/height */
+/* --- GLOBAL RESPONSIVE RESET --- */
+* {
+  box-sizing: border-box;
+}
+
+body { 
+  background-image: url('Batavia_bg.png'); 
+  background-size: cover; 
+  background-position: center;
+  background-attachment: fixed;
+  font-family: 'gelasio'; 
+  margin: 0;
+  padding: 0;
+}
+
+/* 1. FLEX CONTAINER: Responsive padding adapts to mobile and desktop screens */
+.nav_bar {
+  padding: 15px 4%; 
+  background-color: black;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; 
+  align-items: center;            
+  flex-wrap: wrap; 
+}
+
+/* 2. FLEX ITEMS: Acts as the relative anchor for absolute dropdowns */
+.nav_wrapper {
+  position: relative;             
+  display: inline-block;
+}
+
+.nav_button {
+  color: white;
+  font-size: clamp(18px, 2vw, 25px); 
+  text-decoration: none;
+  white-space: nowrap;            
+  cursor: pointer;
+  display: block;
+  padding: 10px 15px;
+}
+
+.nav_button:hover {
+  background-color: #222;
+}
+
+/* 3. DROPDOWN BOX: Layered perfectly underneath the navigation item */
+.dropdown-content {
+  position: absolute;             
+  top: 100%;                      
+  left: 0;                        
+  background-color: black;        
+  min-width: 220px;               
+  z-index: 100;                   
+  display: flex;
+  flex-direction: column;         
+  padding: 10px 0;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.5); 
+}
+
+.dropdown {
+  display: block;
+  text-decoration: none;
+  color: white;
+  background-color: black;
+  font-size: 20px;
+  padding: 10px 20px;             
+}
+
+.dropdown:hover {
+  background-color: #222;
+}
+
+/* --- MAIN CONTENT WINDOWS --- */
+.content { 
+  margin: 5vh auto; 
+  width: 90%; 
+  max-width: 700px; 
+  min-height: 400px;
+  padding: 30px;
+  color: white; 
+  font-size: clamp(20px, 2.5vw, 30px); 
+  background-color: black; 
+} 
+
+.content-about-us {
+  margin: 5vh auto;
+  width: 90%;
+  max-width: 950px; 
+  min-height: 400px;
+  padding: 40px 30px;
+  color: white;
+  background-color: black;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 30px; 
+}
+
+.info1 {
+  grid-column: 1 / span 3; 
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.info1 h1 {
+  font-size: clamp(28px, 4vw, 45px); 
+  margin-bottom: 10px;
+}
+
+.info1 h2 {
+  font-size: clamp(20px, 3vw, 30px);
+  margin-bottom: 15px;
+}
+
+.info1 p {
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 80%; 
+  margin: 0 auto; 
+}
+
+.info2, .info3, .info4 {
+  display: flex;
+  flex-direction: column;
+}
+
+.info2 h2, .info3 h2, .info4 h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.info2 p, .info3 p, .info4 p {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.title { 
+  text-align: center; 
+}
+
+/* --- FORMS & TABLES --- */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px; 
+  margin: 20px auto; 
+}
+
+form input[type="text"], 
+form input[type="submit"],
+form input[type="password"] {
+  width: 100%; 
+  height: 50px;
+  font-size: 20px;
+  margin-top: 10px;
+  border-radius: 10px;
+  padding: 0 15px;
+}
+
+.row {
+  background-color: white;
+  color: black;
+}
+
+/* Wrapper alignment parent keeping things perfectly centered */
+.table-container {
+  width: 100%;
+  overflow-x: auto; 
+  display: flex;
+  justify-content: center; 
+  margin-top: 20px; 
+}
+
+.table {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.table td {
+  padding: 12px 18px;
+  vertical-align: middle; 
+  font-size: 18px;
+}
+
+.action-cell {
+  text-align: center;
+  min-width: 130px;
+}
+
+/* Custom layout styling button properties */
+.btn-add-cart {
+  display: inline-block;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 5px;
+  background-color: #222;
+  color: white;
+  border: 1px solid #444;
+  white-space: nowrap; 
+  transition: background-color 0.2s ease;
+}
+
+.btn-add-cart:hover {
+  background-color: #444;
+  color: #fff;
+}
+
+.go_back {
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  margin-top: 20px;
+}
+
+/* --- MEDIA QUERIES (The Mobile Breakpoint) --- */
+@media (max-width: 768px) {
+  .nav_bar {
+    justify-content: center; 
+    gap: 10px;
+  }
   
+  .content-about-us {
+    grid-template-columns: 1fr; 
+  }
+  
+  .info1 {
+    grid-column: 1; 
+  }
+}
