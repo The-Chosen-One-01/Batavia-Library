@@ -278,7 +278,7 @@ def return_books():
     if request.method == 'POST':
         book = str(request.form['book'])
         condition = process_return(book, user)
-    return render_template('return.html', user=user, failed=book, condition=condition)
+    return render_template('return.html', user=user, book=book, condition=condition)
 
 def process_return(book, user):
     db = sqlite3.connect(DATABASE)
