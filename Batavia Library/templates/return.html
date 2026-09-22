@@ -24,8 +24,8 @@
         <input type="text" name="book" placeholder="Book name">
         <input type="submit" value="Submit">
     </form>
-    {% if failed != None %}
-    <p>There is no book: </p> {{ failed }}
+    {% if condition == 'failed' %}
+    <p>There is no book: </p> {{ book }}
     {% endif %}
 </div>
 {% elif condition == 'no book' %}
@@ -36,7 +36,7 @@
         <input type="text" name="book" placeholder="Book name">
         <input type="submit" value="Submit">
     </form>
-    <p>You are not currently borrowing </p> {{ failed }}
+    <p>You are not currently borrowing </p> {{ book }}
 </div>
 {% else %}
 <div class="content">
