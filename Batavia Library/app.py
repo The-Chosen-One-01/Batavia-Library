@@ -41,7 +41,7 @@ def sign_up():
 def add_new_user():
     username = str(request.form['username'])
     password = str(request.form['password'])
-
+    
     if find_user(username):
         return render_template('sign_up.html', warning='Username')
     if len(password) < 5 or len(password) > 16:
@@ -204,6 +204,8 @@ def remove_from_cart(book_name):
     return redirect('/checkout')
 
 # --- Checkout processing ---
+
+# Checkout router and processing
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     dates = clock()
@@ -248,6 +250,7 @@ def checkout():
 
     return render_template('checkout.html', return_date=return_date, user=user, cart_items=cart_items, failed_books=failed_books, condition=condition)
 
+# Finding IDs of username and book
 def find_IDs_with_cursor(cursor, username, book):
     cursor.execute("SELECT ID, genre_ID FROM books WHERE book_name = ?;", (book,))
     results = cursor.fetchone()
@@ -261,13 +264,15 @@ def find_IDs_with_cursor(cursor, username, book):
     except Exception:
         return False
 
+# Returning current and next month date
 def clock():
     today = datetime.now()
     a_month = today + timedelta(weeks=4)
     return (today.strftime("%d-%m-%Y"), a_month.strftime("%d-%m-%Y")) 
 
+# --- Return processing ---
 
-# --- PROCESSING RETURN ---
+# Return router
 @app.route('/return', methods=['GET', 'POST'])
 def return_books():
     user = session.get('user')
@@ -280,6 +285,7 @@ def return_books():
         condition = process_return(book, user)
     return render_template('return.html', user=user, book=book, condition=condition)
 
+# Return data processing
 def process_return(book, user):
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
@@ -315,7 +321,7 @@ def process_return(book, user):
     db.commit()
     db.close()
     return 'after'
- 
 
+# Running the program
 if __name__ == '__main__':
     app.run(debug=True)
