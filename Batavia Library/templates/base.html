@@ -8,11 +8,14 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&display=swap');
     </style>
-    <title>{% block title %} {% endblock %}</title>
+    <title>{% block title %} {% endblock %}</title> <!-- This is where the title will go -->
 </head>
+
 <body>
+    <!-- This is where the navigator will go -->
     {% block nav %} {% endblock %}
 
+    <!-- This is where the main content will go -->
     {% block content %} {% endblock %}
 </body>
 </html>
