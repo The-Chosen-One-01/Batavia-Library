@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block title %} Homepage  {% endblock %}
 
 {% block nav %}
+<!-- Div of the navigator -->
 <div class="nav_bar">
     <a href="/find-book" class="nav_button">Find book</a>
     {% if user == None %}
@@ -22,6 +23,7 @@
 {% endblock %}
 
 {% block content %}
+<!-- Div of the introduction -->
 <div class="content">
     <h1 class="title">Batavia Library</h1>
     <h2 class="introduction">Find books, borrow books, return books, everything all at once.........</h2>
