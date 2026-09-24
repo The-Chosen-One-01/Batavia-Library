@@ -96,7 +96,7 @@ def encrypt(password):
 def login():
     result = None
 
-    # Checking if the user has inputted the username and password
+    # Processing the logged user
     if request.method == 'POST':
 
         # Initialising the username and password, based on the information taken
@@ -166,7 +166,7 @@ def logout():
     session.pop('cart', None)    # Removing the cart of the current session
     return redirect('/')
     
-# --- FIND & SEARCH BOOKS ---
+# --- Finding books and search handling ---
 
 # Find book page router
 @app.route('/find-book', methods=['GET', 'POST'])
@@ -176,7 +176,7 @@ def find_book():
     book = None
     failed = None
     
-    # Processing the data if the user submitted their book
+    # Processing the searched book
     if request.method == 'POST':
         book = str(request.form['books'])
         found_books = handle_search_result(book)    # Processing the searched books and its results
@@ -297,29 +297,39 @@ def checkout():
         
     cart_items = session.get('cart', [])
 
+    # Processing the checked out books
     if request.method == 'POST':
         address = str(request.form.get('address', ''))
+
+        # Directing the user back to the checkout page if there is no book in the cart
         if not cart_items:
             return redirect('/checkout')
-            
+
+        # Initialising database and cursor
         db = sqlite3.connect(DATABASE)
         cursor = db.cursor()
-        
+
+        # Checking the existence of each book by iterating each book in the cart
         for book in cart_items:
             all_IDs = find_IDs_with_cursor(cursor, user, book)
+
+            # If a book does not exist, add it to the failed books list
             if not all_IDs:
                 failed_books.append(book)
                 continue
-                
-            query_borrow = "INSERT INTO borrow (user_ID, book_ID, genre_ID, address, borrow_date, borrow_due) VALUES (?, ?, ?, ?, ?, ?);"
-            cursor.execute(query_borrow, (all_IDs[0], all_IDs[1], all_IDs[2], address, dates[0], dates[1]))
-            
-            query_user = "UPDATE user SET borrow_number = borrow_number + 1 WHERE name = ?;"
-            cursor.execute(query_user, (user,))
+
+            # Inserting the borrow record to the database
+            query = "INSERT INTO borrow (user_ID, book_ID, genre_ID, address, borrow_date, borrow_due) VALUES (?, ?, ?, ?, ?, ?);"
+            cursor.execute(query, (all_IDs[0], all_IDs[1], all_IDs[2], address, dates[0], dates[1]))
+
+            # Incrementing the borrow_number of the user
+            query = "UPDATE user SET borrow_number = borrow_number + 1 WHERE name = ?;"
+            cursor.execute(query, (user,))
             
         db.commit()
         db.close()
-        
+
+        # Checking if there is any non-existent book being inputted by the user
         if len(failed_books) == 0:
             session.pop('cart', None)
             condition = 'after'
@@ -348,6 +358,7 @@ def clock():
     a_month = today + timedelta(weeks=4)
     return (today.strftime("%d-%m-%Y"), a_month.strftime("%d-%m-%Y")) 
 
+
 # --- Return processing ---
 
 # Return router
@@ -356,8 +367,12 @@ def return_books():
     user = session.get('user')
     book = None
     condition = 'before'
+
+    # Directing the user into homepage if they are not logged in
     if user is None:
         return redirect('/')
+
+    # Processing the returned books
     if request.method == 'POST':
         book = str(request.form['book'])
         condition = process_return(book, user)
@@ -365,10 +380,14 @@ def return_books():
 
 # Return data processing
 def process_return(book, user):
+
+    # Initialising database and cursor
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    all_IDs = find_IDs_with_cursor(cursor, user, book)
 
+    all_IDs = find_IDs_with_cursor(cursor, user, book)    # Finding the IDs for the user and book
+
+    # Checking if all required IDs exist in the database
     if not all_IDs:
         db.close()
         return 'failed'
@@ -376,10 +395,8 @@ def process_return(book, user):
     user_id, book_id, genre_id = all_IDs
 
     # Checking if the user is currently borrowing this book
-    cursor.execute(
-        "SELECT ID FROM borrow WHERE user_ID = ? AND book_ID = ? LIMIT 1;", 
-        (user_id, book_id)
-    )
+    cursor.execute("SELECT ID FROM borrow WHERE user_ID = ? AND book_ID = ? LIMIT 1;", (user_id, book_id))
+    
     borrow_record = cursor.fetchone()
 
     # If book is not borrowed, then the return will fail
