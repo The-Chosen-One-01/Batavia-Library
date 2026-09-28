@@ -44,12 +44,12 @@
                     <td>{{ b[3] }}</td>
                     
                     {% if user != None %}
-                    <td class="action-cell">
-                        <!-- Swapped broken inline forms out for clean link buttons -->
-                        <a href="/add-to-cart-link?book={{ b[1] }}" class="btn-add-cart">
-                           Add to Cart
-                        </a>
-                    </td>
+                        <td class="action-cell">
+                            <form action="/add-to-cart" method="post">
+                                <input type="hidden" name="book" value="{{ b[1] }}">
+                                <button type="submit" class="btn-add-cart">Add to Cart</button>
+                            </form>
+                        </td>
                     {% endif %}
                 </tr>
                 {% endfor %}
