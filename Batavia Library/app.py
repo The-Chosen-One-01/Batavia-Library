@@ -165,6 +165,35 @@ def logout():
     session.pop('user', None)    # Removing the user of the current session
     session.pop('cart', None)    # Removing the cart of the current session
     return redirect('/')
+
+# --- Profile  --- 
+
+# Profile page router
+@app.route('/profile')
+def user_info():
+    user = session.get('user')
+
+    # Directing the user to homepage if they are not logged in
+    if user is None:
+        redirect('/')
+
+    borrow_number = retrieve_user_info(user)   # Retrieving the amount of books the user has borrowed
+    return render_template('profile.html', user=user, borrow_number = borrow_number)
+
+# Retrieving user information
+def retrieve_user_info(user):
+
+    # Initialising the database, cursor, and query
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    query = 'select borrow_number from user where name = ?;'
+
+    # Executing the query and fetching the result
+    cursor.execute(query, (user,))
+    borrow_number = cursor.fetchone()[0]
+    db.close()
+
+    return borrow_number 
     
 # --- Finding books and search handling ---
 
