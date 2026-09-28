@@ -431,7 +431,7 @@ def process_return(book, user):
     # If book is not borrowed, then the return will fail
     if not borrow_record:
         db.close()
-        return 'failed' # User never borrowed this book or already returned it!
+        return 'no book' # User never borrowed this book or already returned it
         
     borrow_id = borrow_record[0]
 
