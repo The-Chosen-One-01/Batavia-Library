@@ -121,7 +121,7 @@ def handle_login_data(username, password):
     verify = verification(username, password)
 
     # If the user does exist, then the log in data is valid
-    if verify:
+    if verify is True:
         session['user'] = username
         result = 'valid'
 
@@ -175,7 +175,7 @@ def user_info():
 
     # Directing the user to homepage if they are not logged in
     if user is None:
-        redirect('/')
+        return redirect('/')
 
     borrow_number = retrieve_user_info(user)   # Retrieving the amount of books the user has borrowed
     return render_template('profile.html', user=user, borrow_number = borrow_number)
@@ -381,7 +381,7 @@ def find_IDs_with_cursor(cursor, username, book):
     except Exception:
         return False
 
-# Returning current and next month date
+# Returning current and roughly next month date
 def clock():
     today = datetime.now()
     a_month = today + timedelta(weeks=4)
