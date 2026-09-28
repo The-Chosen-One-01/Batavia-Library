@@ -271,31 +271,7 @@ def add_to_cart():
             session['cart'] = cart
             
     return redirect('/checkout')
-
-# Adding searched book to cart (from find book)
-@app.route('/add-to-cart-link')
-def add_to_cart_link():
-
-    # Directing the user to log in page if they are not logged in
-    if 'user' not in session:
-        return redirect('/log-in')
-
-    book_title = request.args.get('book')
-    if book_title:
-
-        # Initialising cart as an empty list if cart is not already in session
-        if 'cart' not in session:
-            session['cart'] = []
-            
-        cart = session['cart']
-
-        # Adding book to cart if the book did not already exist in cart
-        if book_title not in cart:
-            cart.append(book_title)
-            session['cart'] = cart
-
-    return redirect('/checkout')
-
+    
 # Removing book from cart
 @app.route('/remove-from-cart/<book_name>')
 def remove_from_cart(book_name):
