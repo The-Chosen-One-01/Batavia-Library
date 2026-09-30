@@ -1,29 +1,40 @@
-{% extends "base.html" %} {% block title %} Log In  {% endblock %}
+{# This log in page is for the user logging in #}
 
+{# Extending base.html #}
+{% extends "base.html" %}
+
+{# Supplying the title #}
+{% block title %} Log In  {% endblock %}
+
+{# Supplying the nav #}
 {% block nav %}
 <div class="nav_bar">
-    <a href="/find-book" class="nav_button">Find book</a>
-    <a href="/sign-up" class="nav_button">Sign Up</a>
-    <a href="/log-in" class="nav_button">Log In</a>
-    <a href="/about-us" class="nav_button">About Us</a>
+    <a href="/find-book" class="nav_button">Find book</a>    {# Link to find book #}
+    <a href="/sign-up" class="nav_button">Sign Up</a>    {# Link to sign up #}
+    <a href="/log-in" class="nav_button">Log In</a>    {# Link to log in #}
+    <a href="/about-us" class="nav_button">About Us</a>    {# Link to about us #}
 </div>
 {% endblock %} 
 
+{# Supplying the main content #}
 {% block content %}
 <div class="content">
     <h1 class="title">Log In</h1>
 
+    {# Displaying the log in form #}
     <form action="/log-in" method="post">
         <input type="text" name="username" placeholder="Username">
         <input type="password" name="password" placeholder="Password">
         <input type="submit" value="Submit">
     </form>
 
+    {# Warning the user if the username or password is wrong #}
     {% if warning == 'Wrong Information' %}
         <p>Your Username or Password is wrong</p>
+
+    {# Warning the user if there is no such account #}
     {% elif warning == 'No Account' %}
         <p>The account does not exist</p>
     {% endif %}
-    
 </div>
 {% endblock %}
