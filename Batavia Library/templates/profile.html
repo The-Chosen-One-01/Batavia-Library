@@ -1,28 +1,50 @@
-{% extends "base.html" %} {% block title %} Profile {% endblock %}
+{# This profile is where the user can see the number of books they have borrowed #}
 
+{# Extending base.html #}
+{% extends "base.html" %}
+
+{# Supplying the title #}
+{% block title %} Profile {% endblock %}
+
+{# Supplying the nav #}
 {% block nav %}
 <div class="nav_bar">
+
+    {# Link to find book #}
     <a href="/find-book" class="nav_button">Find book</a>
+
+    {# Link to checkout and return book in a dropdown #}
     <details class="nav_button">
         <summary>Check Out Book</summary>
         <a href="/checkout" class="dropdown">Check Out Book</a>
         <a href="/return" class="dropdown">Return Book</a>
     </details>
+
+    {# Link to profile and log out in a dropdown #}
     <details class="nav_button">
         <summary>{{ user }}</summary>
         <a href="/profile" class="dropdown">Profile</a>
         <a href="/logout" class="dropdown">Log Out</a>
     </details>
+
+    {# Link to about us #}
     <a href="/about-us" class="nav_button">About Us</a>
 </div>
 {% endblock %}
 
+{# Supplying the main content #}
 {% block content %}
 <div class="content">
     <h1 class="title">Profile</h1>
+
+    {# Displaying the username #}
     <p style="text-align: center; font-size: 18px; margin-top: 40px;">Username: {{ user }}</p>
+
+    {# Displaying the number of books borrowed #}
     <p style="text-align: center; font-size: 18px; color: #ffffff;">Books borrowed: {{ borrow_number }}</p>
     <div style="text-align: center; margin-top: 40px;">
+
+        {# Link to homepage #}
         <a href="/" class="go_back">Back to Home</a>
     </div>
 </div>
