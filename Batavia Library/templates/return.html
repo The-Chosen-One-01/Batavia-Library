@@ -1,48 +1,68 @@
-{% extends "base.html" %} {% block title %} Return Book {% endblock %}
+{# This return page is for the user to return their book #}
+
+{# Extending base.html #}
+{% extends "base.html" %}
+
+{# Supplying the title #}
+{% block title %} Return Book {% endblock %}
+
+{# Supplying the nav #}
 {% block nav %}
 <div class="nav_bar">
+
+    {# Link to find book #}
     <a href="/find-book" class="nav_button">Find book</a>
+
+    {# Link to checkout and return book to a dropdown #}
     <details class="nav_button">
         <summary>Check Out Book</summary>
         <a href="/checkout" class="dropdown">Check Out Book</a>
         <a href="/return" class="dropdown">Return Book</a>
     </details>
+
+    {# Link to profile and log out in a dropdown #}
     <details class="nav_button">
         <summary>{{ user }}</summary>
         <a href="/profile" class="dropdown">Profile</a>
         <a href="/logout" class="dropdown">Log Out</a>
     </details>
+
+    {# Link to about us #}
     <a href="/about-us" class="nav_button">About Us</a>
 </div>
 {% endblock %}
 
+{# Supplying the main content #}
 {% block content %}
-{% if condition == 'before' or condition == 'failed' %}
+
+{# Displaying the return form before the user successfully returning a book #}
+{% if condition == 'before' or condition == 'failed' or condition == 'no book' %}
 <div class="content">
     <h1 class="title">Return Book</h1>
 
+    {# The return form #}
     <form action="/return" method="post">
         <input type="text" name="book" placeholder="Book name">
         <input type="submit" value="Submit">
     </form>
+
+    {# Warning the user if the book they typed in previously does not exist #}
     {% if condition == 'failed' %}
     <p>There is no book: </p> {{ book }}
+
+    {# Warning the user if they are not currently borrowing the book they typed in previously #}
+    {% elif condition == 'no book' %}
+    <p>You are not currently borrowing </p> {{ book }}
     {% endif %}
 </div>
-{% elif condition == 'no book' %}
-<div class="content">
-    <h1 class="title">Return Book</h1>
 
-    <form action="/return" method="post">
-        <input type="text" name="book" placeholder="Book name">
-        <input type="submit" value="Submit">
-    </form>
-    <p>You are not currently borrowing </p> {{ book }}
-</div>
+{# Thanking the user if they successfully returned a book #}
 {% else %}
 <div class="content">
     <h1 class="title">Return Successful</h1>
     <h2 class="introduction">Thank you for returning a book.</h2>
+
+    {# Link to homepage #}
     <a href="/" class="go_back">Go back to Homepage?</a>
 </div>
 {% endif %}
