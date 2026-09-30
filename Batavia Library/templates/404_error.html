@@ -17,7 +17,7 @@
     <a href="/sign-up" class="nav_button">Sign Up</a>
     <a href="/log-in" class="nav_button">Log In</a>
 
-    {# Link to checkout and return book if the user is logged in #}
+    {# Link to checkout and return book in a dropdown if the user is logged in #}
     {% else %}
     <details class="nav_button">
         <summary>Check Out Book</summary>
@@ -25,7 +25,7 @@
         <a href="/return" class="dropdown">Return Book</a>
     </details>
 
-    {# Link to profile and log out if the user is logged in #}
+    {# Link to profile and log out in a dropdown if the user is logged in #}
     <details class="nav_button">
         <summary>{{ user }}</summary>
         <a href="/profile" class="dropdown">Profile</a>
