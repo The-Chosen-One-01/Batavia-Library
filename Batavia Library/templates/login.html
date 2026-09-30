@@ -9,10 +9,18 @@
 {# Supplying the nav #}
 {% block nav %}
 <div class="nav_bar">
-    <a href="/find-book" class="nav_button">Find book</a>    {# Link to find book #}
-    <a href="/sign-up" class="nav_button">Sign Up</a>    {# Link to sign up #}
-    <a href="/log-in" class="nav_button">Log In</a>    {# Link to log in #}
-    <a href="/about-us" class="nav_button">About Us</a>    {# Link to about us #}
+
+    {# Link to find book #}
+    <a href="/find-book" class="nav_button">Find book</a>
+
+    {# Link to sign up #}
+    <a href="/sign-up" class="nav_button">Sign Up</a>
+
+    {# Link to log in #}
+    <a href="/log-in" class="nav_button">Log In</a>
+
+    {# Link to about us #}
+    <a href="/about-us" class="nav_button">About Us</a>
 </div>
 {% endblock %} 
 
@@ -23,9 +31,9 @@
 
     {# Displaying the log in form #}
     <form action="/log-in" method="post">
-        <input type="text" name="username" placeholder="Username">
-        <input type="password" name="password" placeholder="Password">
-        <input type="submit" value="Submit">
+        <input type="text" name="username" placeholder="Username" required>  {# Username #}
+        <input type="password" name="password" placeholder="Password" required>  {# Password #}
+        <input type="submit" value="Submit">    {# Submitting the log in information #}
     </form>
 
     {# Warning the user if the username or password is wrong #}
