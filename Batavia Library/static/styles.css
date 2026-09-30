@@ -1,338 +1,105 @@
-/*
-body {
-  background-image: url('Batavia_bg.png');
-  font-family: 'gelasio';
-}
+/* This is the CSS file for the website */
 
-.nav_bar {
-  padding-bottom: 0.5cm;
-  padding-top:0.5cm;
-  padding-left: 70px;
-  padding-right: 70px;
-  background-color: black;
-  display: flex;       
-  flex-direction: row;
-}
-
-.nav_button {
-  color: white;
-  font-size: 25px;
-  margin-right: 110px;
-  margin-left: 90px;
-  text-decoration: none;
-  display: flex;
-  justify-content: space-between;
-}
-
-.content {
-  margin: auto;
-  margin-top: 3cm;
-  width: 18cm;
-  height: 10cm;
-  padding-top: 1cm;
-  padding-bottom: 1cm;
-  padding-right: 1.25cm;
-  padding-left: 1.25cm;
-  color: white;
-  font-size: 30px;
-  background-color: black;
-}
-
-.title {
-  text-align: center;
-}
-
-.dropdown {
-  display: block;
-  text-decoration: none;
-  color: white;    
-}
-*/
-/*
-body { 
-  background-image: url('Batavia_bg.png'); 
-  background-size: 100%;
-  font-family: 'gelasio'; 
-}
-
- 1. FLEX CONTAINER: Evenly spaces items without relying on margins 
-.nav_bar {
-  padding: 0.5cm 70px;
-  background-color: black;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between; Spreads navigation out elegantly 
-  align-items: center;            Perfectly centers items vertically 
-}
-
- 2. FLEX ITEMS: Acts as the relative anchor for absolute dropdowns
-.nav_wrapper {
-  position: relative;             ANCHOR: Dropdowns lock onto this container
-  display: inline-block;
-}
-
-.nav_button {
-  color: white;
-  font-size: 25px;
-  text-decoration: none;
-  white-space: nowrap;             FIX: Completely stops "Log Out" from breaking text
-  cursor: pointer;
-  display: block;
-  padding: 10px 20px;
-}
-
-.nav_button:hover {
-  background-color: #222;
-}
-
- 3. DROPDOWN BOX: Layered perfectly underneath the navigation item 
-.dropdown-content {
-  position: absolute;             Lifts menu up so it floats on top of the screen
-  top: 100%;                      Drops it directly below the text link
-  left: 0;                        Aligns flush with the left side
-  background-color: black;        Blocks underlying background bleed-through
-  min-width: 220px;               Gives text plenty of horizontal room
-  z-index: 100;                   Keeps it safely on top of the main content box
-  display: flex;
-  flex-direction: column;         Vertically stacks dropdown choices
-  padding: 10px 0;
-  box-shadow: 0px 8px 16px rgba(0,0,0,0.5); 
-}
-
-.dropdown {
-  display: block;
-  text-decoration: none;
-  color: white;
-  background-color: black;
-  font-size: 20px;
-  padding: 10px 20px;             Clean, easy-to-click target size
-}
-
-Highlights the dropdown row when the mouse moves over it
-.dropdown:hover {
-  background-color: #222;
-}
-
-.content { 
-  margin: auto; 
-  margin-top: 3cm; 
-  width: 18cm; 
-  height: auto; 
-  min-height: 10cm;
-  padding: 1cm 1.25cm;
-  color: white; 
-  font-size: 30px; 
-  background-color: black; 
-} 
-
-.content-about-us {
-  margin: auto;
-  margin-top: 3cm;
-  margin-bottom: 3cm;
-  width: 24cm; Widened slightly so 3 text columns have enough room side-by-side
-  height: auto;
-  min-height: 10cm;
-  padding: 1cm 1.25cm;
-  color: white;
-  background-color: black;
-  box-sizing: border-box;
-
-   Explicitly define 3 equal columns
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); 
-  gap: 40px; /* Space between the FAQ columns 
-}
-
-  2. Make the header section span across all 3 columns
-.info1 {
-  grid-column: 1 / span 3; Forces it to stretch from column 1 through 3
-  text-align: center;
-  margin-bottom: 1cm;
-}
-
-.info1 h1 {
-  font-size: 45px;
-  margin-bottom: 10px;
-}
-
-.info1 h2 {
-  font-size: 30px;
-  margin-bottom: 15px;
-}
-
-.info1 p {
-  font-size: 18px;
-  line-height: 1.5;
-  max-width: 80%;  Keeps the top paragraph nicely contained
-  margin: 0 auto; 
-}
-
-3. The FAQ blocks automatically sit side-by-side in columns 1, 2, and 3
-.info2, .info3, .info4 {
-  display: flex;
-  flex-direction: column;
-}
-
-.info2 h2, .info3 h2, .info4 h2 {
-  font-size: 20px;
-  margin-bottom: 12px;
-  line-height: 1.3;
-}
-
-.info2 p, .info3 p, .info4 p {
-  font-size: 15px;
-  line-height: 1.5;
-  margin: 0;
-}
-
-
-.title { 
-  text-align: center; 
-}
-
-.row {
-  background-color: white;
-  color: black;
-  position: center;
-}
-
-.table{
-  text-align: center;
-  margin: 0 auto;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 50%;
-  margin-left: 4.5cm;
-}
-
-form input[type="text"], 
-form input[type="submit"],
-form input[type="password"] {
-  width: 110%;
-  height: 50px;
-  font-size: 24px;
-  margin-top: 10px;
-  border-radius: 10px 10px 10px 10px;
-}
-
-.go_back {
-  color: white;
-  text-align: center;
-  text-decoration: none;
-}
-*/
-/* --- GLOBAL FIX --- */
-/* Ensures padding and borders are included in the element's total width/height */
-/* --- GLOBAL RESPONSIVE RESET --- */
+/* 1. Global styles. Applies to every element. With border-box, an element's width and height
+   include its padding and border, so boxes do not grow past the width set. */
 * {
   box-sizing: border-box;
 }
 
+/* Page-wide settings */
 body { 
-  background-image: url('Batavia_bg.png'); 
-  background-size: cover; 
-  background-position: center;
-  background-attachment: fixed;
-  font-family: 'gelasio'; 
-  margin: 0;
-  padding: 0;
+  background-image: url('Batavia_bg.png');   /* Setting background picture (static/Batavia_bg.png) */
+  background-size: cover;                    /* Scaling the picture to fill the whole window */
+  background-position: center;               /* Keeping the middle of the picture in view */
+  background-attachment: fixed;              /* Making the picture stays still while the page scrolls */
+  font-family: 'gelasio';                    /* Serif font, loaded from Google Fonts in base.html */
+  margin: 0;                                 /* Removing the browser's default page margin... */
+  padding: 0;                                /* Ensuring the nav bar touches the window edges */
 }
 
-/* 1. FLEX CONTAINER: Responsive padding adapts to mobile and desktop screens */
+
+/* 2. Navigation bars. For buttons, nav, and dropdown menu */
+
+/* The black nav bar across the top. Its links sit in one row and spread out evenly. Uses flex container to make sure the bar is suitable for desktops and mobile */
 .nav_bar {
-  padding: 15px 4%; 
+  padding: 15px 4%;                /* 4% side padding shrinks/grows with the screen width */
   background-color: black;
-  display: flex;
+  display: flex;                   /* Laying the links out in a row */
   flex-direction: row;
-  justify-content: space-between; 
-  align-items: center;            
-  flex-wrap: wrap; 
+  justify-content: space-between;  /* Spreading the links across the full width */
+  align-items: center;             /* Lining the links up vertically in the middle */
+  flex-wrap: wrap;                 /* Letting links drop to a second line on narrow screens */
 }
 
-/* 2. FLEX ITEMS: Acts as the relative anchor for absolute dropdowns */
-.nav_wrapper {
-  position: relative;             
-  display: inline-block;
-}
 
+/* Each button/dropdown in the nav bar */
 .nav_button {
   color: white;
-  font-size: clamp(18px, 2vw, 25px); 
-  text-decoration: none;
-  white-space: nowrap;            
-  cursor: pointer;
+  font-size: clamp(18px, 2vw, 25px);  /* Scaling with screen width only between 18px and 25px */
+  text-decoration: none;              /* Removing the underline from links */
+  white-space: nowrap;                /* Making sure the label does not go to another line */
+  cursor: pointer;                    /* Showing the hand symbol as the cursor */
   display: block;
   padding: 10px 15px;
 }
 
+/* Button/dropdown when hovered over */
 .nav_button:hover {
-  background-color: #222;
+  background-color: #222;  /* Slightly lighter background when the mouse is over a nav item */
 }
 
-/* 3. DROPDOWN BOX: Layered perfectly underneath the navigation item */
-.dropdown-content {
-  position: absolute;             
-  top: 100%;                      
-  left: 0;                        
-  background-color: black;        
-  min-width: 220px;               
-  z-index: 100;                   
-  display: flex;
-  flex-direction: column;         
-  padding: 10px 0;
-  box-shadow: 0px 8px 16px rgba(0,0,0,0.5); 
-}
-
+/* Links inside a dropdown */
 .dropdown {
-  display: block;
-  text-decoration: none;
-  color: white;
-  background-color: black;
-  font-size: 20px;
-  padding: 10px 20px;             
+  display: block;                 /* Each link fills its own full-width row */
+  text-decoration: none;        /* Removing the underline of the links */
+  color: white;                 
+  background-color: black;      
+  font-size: 20px;            
+  padding: 10px 20px;         
 }
 
 .dropdown:hover {
-  background-color: #222;
+  background-color: #222;         /* Slightly lighter background when the mouse is over links in dropdown */
 }
 
-/* --- MAIN CONTENT WINDOWS --- */
+
+/* 3. Main contents.  */
+
+/* The black box that becomes the background of the main content (excluding About Us) */
 .content { 
-  margin: 5vh auto; 
-  width: 90%; 
-  max-width: 700px; 
-  min-height: 400px;
+  margin: 5vh auto;               /* Gap above/below (5% of window height), centred left-right */
+  width: 90%;                     /* Taking 90% of the window width on small screens */
+  max-width: 700px;               /* Setting the maximum width to 700px */
+  min-height: 400px;              /* Setting the minimum height to 700px */
   padding: 30px;
   color: white; 
-  font-size: clamp(20px, 2.5vw, 30px); 
+  font-size: clamp(20px, 2.5vw, 30px);   /* Scaling the text size with the screen from 20px to 30px */
   background-color: black; 
 } 
 
+/* The black box on the background of About Us page content */
 .content-about-us {
   margin: 5vh auto;
   width: 90%;
-  max-width: 950px; 
+  max-width: 950px;               /* Setting the maximum width to 950px, which is wider than .content to fit three columns */
   min-height: 400px;
   padding: 40px 30px;
   color: white;
   background-color: black;
   display: grid;
-  grid-template-columns: repeat(3, 1fr); 
-  gap: 30px; 
+  grid-template-columns: repeat(3, 1fr);   /* Three equal-width columns */
+  gap: 30px;                               /* Space between the grid cells */
 }
 
+/* Batavia Library brief history in About Us page */
 .info1 {
-  grid-column: 1 / span 3; 
+  grid-column: 1 / span 3;        /* Starting at column 1 and stretching across all 3 columns */
   text-align: center;
   margin-bottom: 30px;
 }
 
 .info1 h1 {
-  font-size: clamp(28px, 4vw, 45px); 
+  font-size: clamp(28px, 4vw, 45px);   /* Big heading that scales with the screen */
   margin-bottom: 10px;
 }
 
@@ -343,14 +110,15 @@ body {
 
 .info1 p {
   font-size: 18px;
-  line-height: 1.5;
-  max-width: 80%; 
-  margin: 0 auto; 
+  line-height: 1.5;               /* Extra space between lines to make it easier to read */
+  max-width: 80%;                 /* Keeping the paragraph narrower than the box */
+  margin: 0 auto;                 /* Positioning the paragraph at the center */
 }
 
+/* The frequently asked questions in About Us page */
 .info2, .info3, .info4 {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;         /* Positioning the heading on top and the paragraph underneath */
 }
 
 .info2 h2, .info3 h2, .info4 h2 {
@@ -365,42 +133,47 @@ body {
   margin: 0;
 }
 
+/* Positioning the page headings in the center */
 .title { 
   text-align: center; 
 }
 
-/* --- FORMS & TABLES --- */
+/* 4. Forms and tables */
+
+/* For all of the forms */
 form {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;         /* Stacking the inputs top to bottom */
   align-items: center;
   width: 100%;
   max-width: 400px; 
-  margin: 20px auto; 
+  margin: 20px auto;              /* Spacing above/below and centering left-right */
 }
 
+/* Text, submit, and password forms */
 form input[type="text"], 
 form input[type="submit"],
 form input[type="password"] {
   width: 100%; 
   height: 50px;
   font-size: 20px;
-  margin-top: 10px;
-  border-radius: 10px;
-  padding: 0 15px;
+  margin-top: 10px;               /* Gapping between one field and the next */
+  border-radius: 10px;            /* Shaping it to rounded corners */
+  padding: 0 15px;                /* Spacing between the box edge and the typed text */
 }
 
+/* A table row */
 .row {
   background-color: white;
   color: black;
 }
 
-/* Wrapper alignment parent keeping things perfectly centered */
+/* Table for the searched books */
 .table-container {
   width: 100%;
-  overflow-x: auto; 
+  overflow-x: auto;               /* Showing a sideways scroll bar only when needed */
   display: flex;
-  justify-content: center; 
+  justify-content: center;        /* Positioning the table inside the wrapper in the center */
   margin-top: 20px; 
 }
 
@@ -409,18 +182,22 @@ form input[type="password"] {
   margin: 0 auto;
 }
 
+/* For every table cell */
 .table td {
-  padding: 12px 18px;
-  vertical-align: middle; 
+  padding: 12px 18px;             
+  vertical-align: middle;         /* Keeping text and buttons level within a row */
   font-size: 18px;
 }
 
+/* The cell for the button 'Add to Cart' if the user is logged in */
 .action-cell {
   text-align: center;
-  min-width: 130px;
+  min-width: 130px;               /* Stops the button column from getting squashed */
 }
 
-/* Custom layout styling button properties */
+/* 5. Buttons and links */
+
+/* The 'Add to Cart' button in the search results */
 .btn-add-cart {
   display: inline-block;
   font-size: 14px;
@@ -430,34 +207,42 @@ form input[type="password"] {
   background-color: #222;
   color: white;
   border: 1px solid #444;
-  white-space: nowrap; 
-  transition: background-color 0.2s ease;
+  white-space: nowrap;                          /* Keeping the label on one line */
+  transition: background-color 0.2s ease;       /* Fading smoothly when the colour changes when hovered over */
 }
 
 .btn-add-cart:hover {
-  background-color: #444;
+  background-color: #444;         /* Lighter grey when the button is hovered over */
   color: #fff;
 }
 
+/* Non-forms button (links that lead to another page without any other processing) */
 .go_back {
   color: white;
   text-align: center;
   text-decoration: none;
-  display: block;
+  display: block;                 /* Own line so can be positioned at center */
   margin-top: 20px;
 }
 
-/* --- MEDIA QUERIES (The Mobile Breakpoint) --- */
+
+/* 6. Mobile layout */
+
+/* Everything inside applies only when the window is 768px wide less like phones and small tablets */
 @media (max-width: 768px) {
+
+  /* Positioning the nav links at the center */
   .nav_bar {
     justify-content: center; 
-    gap: 10px;
+    gap: 10px;                    /* Spacing between links when they wrap onto extra lines */
   }
   
+  /* About Us: switching from 3 columns to a single column */
   .content-about-us {
     grid-template-columns: 1fr; 
   }
   
+  /* The brief history of Batavia Library in About Us page now only has one column to span */
   .info1 {
     grid-column: 1; 
   }
