@@ -1,30 +1,52 @@
-{% extends "base.html" %} {% block title %} About Us {% endblock %}
+{# This 404 error page is used when the user types a link that does not exist in the address bar #}
 
+{# Extending base.html #}
+{% extends "base.html" %} 
+{# Suppyling the title #}
+{% block title %} Page Not Found {% endblock %}
+
+{# Supplying the nav #}
 {% block nav %}
 <div class="nav_bar">
+    
+    {# Link to find book #}
     <a href="/find-book" class="nav_button">Find book</a>
+
+    {# Link to sign up and login if the user is not logged in #}
     {% if user == None %}
     <a href="/sign-up" class="nav_button">Sign Up</a>
     <a href="/log-in" class="nav_button">Log In</a>
+
+    {# Link to checkout and return book if the user is logged in #}
     {% else %}
     <details class="nav_button">
         <summary>Check Out Book</summary>
         <a href="/checkout" class="dropdown">Check Out Book</a>
         <a href="/return" class="dropdown">Return Book</a>
     </details>
+
+    {# Link to profile and log out if the user is logged in #}
     <details class="nav_button">
         <summary>{{ user }}</summary>
         <a href="/profile" class="dropdown">Profile</a>
         <a href="/logout" class="dropdown">Log Out</a>
-    </details>    {% endif %}
+    </details>    
+    {% endif %}
+
+    {# Link to about us #}
     <a href="/about-us" class="nav_button">About Us</a>
 </div>
 {% endblock %}
 
+{# Supplying the main content #}
 {% block content %}
 <div class="content">
+
+    {# Stating and explaining the error to the user #}
     <h1 class="title">404 Error: Page Not Found</h1>
     <h2 class="introduction">Page you are looking for does not exist</h2>
+
+    {# Link to homepage #}
     <a href="/" class="go_back">Go back to Homepage?</a>
 </div>
 {% endblock %}
