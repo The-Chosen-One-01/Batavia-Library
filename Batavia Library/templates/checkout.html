@@ -1,70 +1,112 @@
-{% extends "base.html" %} {% block title %} Checkout Books {% endblock %}
+{# This is the page where user can checkout book or store their book in their cart #}
 
+{# Extending base.html #}
+{% extends "base.html" %}
+
+{# Supplying the title #}
+{% block title %} Checkout Books {% endblock %}
+
+{# Supplying the nav #}
 {% block nav %}
 <div class="nav_bar">
+
+    {# Link to find book #}
     <a href="/find-book" class="nav_button">Find book</a>
+
+    {# Link to checkout and return book in a dropdown #}
     <details class="nav_button">
         <summary>Check Out Book</summary>
         <a href="/checkout" class="dropdown">Check Out Book</a>
         <a href="/return" class="dropdown">Return Book</a>
     </details>
+
+    {# Link to profile and log out in a dropdown #}
     <details class="nav_button">
         <summary>{{ user }}</summary>
         <a href="/profile" class="dropdown">Profile</a>
         <a href="/logout" class="dropdown">Log Out</a>
     </details>
+
+    {# Link to about us #}
     <a href="/about-us" class="nav_button">About Us</a>
 </div>
 {% endblock %}
 
+{# Supplying the main content #}
 {% block content %}
+
+{# Content for before the user successfully checkout their books #}
 {% if condition == 'before' or condition == 'partial_failed' %}
 <div class="content" style="height: auto; min-height: 10cm;">
     <h1 class="title">Checkout Book</h1>
 
-    <!-- Manual Text Cart Addition -->
+    {# Manually adding the cart #}
     <form action="/add-to-cart" method="post" style="margin-bottom: 30px;">
         <input type="text" name="book" placeholder="Type book name to add..." required>
         <input type="submit" value="Add to Cart" style="color: black;">
     </form>
 
+    {# Warning the user of the book that cannot be processed #}
     {% if condition == 'partial_failed' %}
         <p style="color: #ff4d4d; text-align: center; font-size: 18px;">
             Warning: The following items could not be processed: <br>
             <strong>{{ failed_books | join(', ') }}</strong>
         </p>
+
+        {# Suggesting the user on why would it happen #}
         <p style="color: #ff4d4d; text-align: center; font-size: 18px;">The book(s) might not exist or check the spelling</p>
     {% endif %}
 
     <div style="width: 100%; margin-top: 20px;">
+        {# Listing all the books in cart if there is a book in cart #}
         {% if cart_items %}
             <h3 style="font-size: 22px; border-bottom: 1px solid #444; padding-bottom: 5px;">Items in Cart ({{ cart_items|length }}):</h3>
             <ul style="list-style: none; padding: 0;">
+
+                {# Iterating through all the books in cart #}
                 {% for item in cart_items %}
+
                     <li style="display: flex; justify-content: space-between; align-items: center; background: #222; padding: 10px 15px; margin-bottom: 8px; border-radius: 5px; font-size: 20px;">
+
+                        {# Name of book #}
                         <span>{{ item }}</span>
+
+                        {# Link to remove the book from cart #}
                         <a href="/remove-from-cart/{{ item }}" style="color: #ff4d4d; text-decoration: none; font-size: 16px;">[Remove]</a>
                     </li>
                 {% endfor %}
             </ul>
 
-            <!-- Processing the order -->
+            {# Processing the checkout order #}
             <form action="/checkout" method="post" style="margin-top: 30px;">
+
+                {# Field for delivery address #}
                 <p style="font-size: 18px; margin-bottom: 5px; color: #bbb;">Delivery Address:</p>
                 <input type="text" name="address" placeholder="Enter delivery address" required>
-                <input type="submit" value="Confirm Bulk Checkout" style="background-color: green; color: white; margin-top: 15px;">
+
+                {# Submit button to confirm the checkout #}
+                <input type="submit" value="Confirm Checkout" style="background-color: green; color: white; margin-top: 15px;">
             </form>
+
+        {# Telling the user if the cart if empty instead #}
         {% else %}
             <p style="text-align: center; color: #888; font-size: 20px; margin-top: 40px;">Your cart is completely empty.</p>
         {% endif %}
     </div>
 </div>
 
+{# Content for after successfully checking out the books #}
 {% elif condition == 'after' %}
 <div class="content">
+
+    {# Congratulating the user after they check out their books #}
     <h1 class="title">Checkout Successful!</h1>
     <p style="text-align: center; font-size: 22px; margin-top: 40px;">Thank you for checking out a book.</p>
+
+    {# Due date of the borrow books #}
     <p style="text-align: center; font-size: 18px; color: #ccc;">Please return them by: <strong>{{ return_date }}</strong></p>
+
+    {# Link to homepage #}
     <div style="text-align: center; margin-top: 40px;">
         <a href="/" class="go_back">Back to Home</a>
     </div>
