@@ -1,26 +1,46 @@
-{% extends "base.html" %} {% block title %} Sign Up {% endblock %}
+{# This sign up page is for the user creating a new account #}
 
+{# Extending base.html #}
+{% extends "base.html" %}
+
+{# Supplying the title #}
+{% block title %} Sign Up {% endblock %}
+
+{# Supplying the nav #}
 {% block nav %}
 <div class="nav_bar">
+
+    {# Link to find book #}
     <a href="/find-book" class="nav_button">Find book</a>
+
+    {# Link to sign up #}
     <a href="/sign-up" class="nav_button">Sign Up</a>
+
+    {# Link to log in #}
     <a href="/log-in" class="nav_button">Log In</a>
+
+    {# Link to about us #}
     <a href="/about-us" class="nav_button">About Us</a>
 </div>
 {% endblock %}
 
+{# Supplying the main content #}
 {% block content %}
 <div class="content">
     <h1 class="title">Sign Up</h1>
 
+    {# Displaying the form to create a new user #}
     <form action="/input_new_user" method="post">
-        <input type="text" name="username" placeholder="Username">
-        <input type="password" name="password" placeholder="Password - 5 to 16 characters">
+        <input type="text" name="username" placeholder="Username">    {# Username field #}
+        <input type="password" name="password" placeholder="Password - 5 to 16 characters">    {# Password field #}
         <input type="submit" value="Submit">
     </form>
 
+    {# Warning the user if another account already has the same username #}
     {% if warning == 'Username' %}
     <p>Someone already have the same username</p>
+
+    {# Warning the user if the password is either too short (less than 5 characters) or too long (more than 16 characters) #}
     {% elif warning == 'Password' %}
     <p>Password needs to be between 5 - 16 characters</p>
     {% endif %}
