@@ -1,53 +1,84 @@
-{% extends "base.html" %} {% block title %} About Us {% endblock %}
+{# Extending base.html #}
+{% extends "base.html" %} 
 
+{# Suppyling the title #}
+{% block title %} About Us {% endblock %}
+
+{# Supplying the nav #}
 {% block nav %}
 <div class="nav_bar">
+
+    {# Link to find book #}
     <a href="/find-book" class="nav_button">Find book</a>
+
+    {# Link to sign up and log in if the is not logged in #}
     {% if user == None %}
     <a href="/sign-up" class="nav_button">Sign Up</a>
     <a href="/log-in" class="nav_button">Log In</a>
+
+    {# Link to checkout and return book in a dropdown if the user is logged in #}
     {% else %}
     <details class="nav_button">
         <summary>Check Out Book</summary>
         <a href="/checkout" class="dropdown">Check Out Book</a>
         <a href="/return" class="dropdown">Return Book</a>
     </details>
+
+    {# Link to profile and log out in a dropdown if the user is logged in #}
     <details class="nav_button">
         <summary>{{ user }}</summary>
         <a href="/profile" class="dropdown">Profile</a>
         <a href="/logout" class="dropdown">Log Out</a>
     </details>
     {% endif %}
+
+    {# Link to about us #}
     <a href="/about-us" class="nav_button">About Us</a>
 </div>
 {% endblock %}
 
+{# Supplying the main content #}
 {% block content %}
 <div class="content-about-us">
     <div class="info1">
+
+        {# Showing the 'Batavia Library' title and the name of the page #}
         <h1 class="title">Batavia Library</h1>
         <h2 class="introduction">About Us</h2>
+
+        {# A brief history of the library #}
         <p>Batavia Library was built in the 1800s by several local scholar. 
             This library was mainly used to help the local people who could not receive education from the colonial policy. 
             Now, this library has helped millions of people reaching their dream and can be accessed online.
         </p>
     </div>
+    
+    {# Frequently Asked Questions #}
+
+    {# Information on how to check out books #}
     <div class="info2">
         <h2>How to checkout books in here?</h2>
         <p> You can checkout book if you are logged in. 
             Then, just head at the navigator bar at the top and click it. 
             Then you just need to type in the book and your address so your book can be sent.
+            You can also checkout multiple books.
+            Our checkout system uses cart-based checkout. This allows you to checkout multiple books at the same time.
         </p>
     </div>
+
+    {# Information on the cost of the library #}
     <div class="info3">
         <h2>Will it costs me to deliver the book?</h2>
         <p> Our library is working with countless of volunteers who are willing to send your books. 
             This is to ensure that our library is still accessible to everyone. This also means that the library will be free to everyone.
         </p>
     </div>
+
+    {# Information on the security of the personal information of user #}
     <div class="info4">
-        <h2>Can I checkout multiple books?</h2>
-        <p> You can. Our checkout system uses cart-based checkout. This allows you to checkout multiple books at the same time.
+        <h2>How secure is my personal information?</h2>
+        <p> When creating an account, our website does not require much personal information.
+            You are only asked to put your username and password. Our website is also protected against SQL injection, making it safer.
         </p>
     </div>
 </div>
