@@ -308,8 +308,6 @@ def checkout():
         if not cart_items:
             return redirect('/checkout')
 
-        # Initialising database and cursor
-
         # Checking the existence of each book by iterating each book in the cart
         for book in cart_items:
             all_IDs = find_IDs(user, book)
