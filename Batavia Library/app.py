@@ -241,11 +241,14 @@ def similarity_ratio(book1, book2):
     if not book1 or not book2:
         return 0.0
 
+    # Making both books have the same cases
+    book1, book2 = book1.lower().strip(), book2.lower().strip()
+
     # Checking if the title of either book contains the title of the other book
     if book1 in book2 or book2 in book1:
         return 1.0
     
-    return SequenceMatcher(None, book1.lower().strip(), book2.lower().strip()).ratio()
+    return SequenceMatcher(None, book1, book2).ratio()
 
 # --- Cart handling system ---
 
