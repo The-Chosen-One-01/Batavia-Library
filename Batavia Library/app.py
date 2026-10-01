@@ -186,7 +186,7 @@ def user_info():
 def retrieve_user_info(user):
 
     # Finding the borrow number of the user
-    borrow_number = query_db("select borrow_number from user where name = ?;", (user,), one=True)
+    borrow_number = query_db("SELECT borrow_number FROM user WHERE name = ?;", (user,), one=True)
 
     return borrow_number[0] 
     
