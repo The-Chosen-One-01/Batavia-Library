@@ -72,7 +72,7 @@ def find_user(user):
     # Initialising the database, cursor, and query
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    query = "SELECT * FROM user WHERE name = 
+    query = "SELECT * FROM user WHERE name = ?"
 
     # Executing the query of the database and fetching the result
     cursor.execute(query, (user,))
@@ -424,4 +424,4 @@ def process_return(book, user):
 
 # Running the program
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
