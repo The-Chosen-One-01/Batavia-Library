@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
+from contextlib import closing
 
 #Initialising constants
 app = Flask(__name__)
@@ -23,6 +24,27 @@ def home():
 def page_not_found(e):
     user = session.get('user')
     return render_template("404_error.html", user=user)
+
+
+# --- Database and Query ---
+
+# Connecting to the database
+def get_db():
+    db = sqlite3.connect(DATABASE)
+    return db
+
+# Running a 'select' query and returning the result(s)
+def query_db(query, inputs=(), one=False):
+    with get_db() as db:
+        cursor = db.execute(query, inputs)
+        result = cursor.fetchone() if one else cursor.fetchall()
+    return result
+
+# Running an 'insert'/'delete'/'update' query and saving it
+def modify_db(query, inputs=()):
+    with get_db() as db:
+        db.execute(query, inputs)
+        db.commit()
 
 # --- About us router ---
 @app.route('/about-us')
@@ -53,15 +75,8 @@ def add_new_user():
     if len(password) < 5 or len(password) > 16:
         return render_template('sign_up.html', warning='Password')
 
-    # Initialising the database, cursor, and query
-    db = sqlite3.connect(DATABASE)
-    cursor = db.cursor()
-    query = "INSERT INTO user (name, password, borrow_number) VALUES (?, ?, 0);"
-
-    # Executing the query of the database and committing it
-    cursor.execute(query, (username, hash_password(password)))
-    db.commit()
-    db.close()
+    # Inserting the new user into the database
+    modify_db("INSERT INTO user (name, password, borrow_number) VALUES (?, ?, 0);", (username, hash_password(password)))
 
     # Setting the user of this session to the new user, and returning the user back to homepage
     session['user'] = username
@@ -70,15 +85,8 @@ def add_new_user():
 # Finding user that has the same username as the new user
 def find_user(user):
 
-    # Initialising the database, cursor, and query
-    db = sqlite3.connect(DATABASE)
-    cursor = db.cursor()
-    query = "SELECT * FROM user WHERE name = ?"
-
-    # Executing the query of the database and fetching the result
-    cursor.execute(query, (user,))
-    user_data = cursor.fetchone()
-    db.close()
+    # Finding the user that has the same name
+    user_data = query_db("SELECT * FROM user WHERE name = ?", (user,), one=True)
 
     # Checking and returning if the user already exist or not
     return user_data is not None
@@ -139,17 +147,10 @@ def handle_login_data(username, password):
 # Log in data verification
 def verification(username, password):
 
-    # Initialising the database, cursor, and query
-    db = sqlite3.connect(DATABASE)
-    cursor = db.cursor()
-    query = "SELECT password FROM user WHERE name = ?;"
+    # Finding the actual account in the database
+    result = query_db("SELECT password FROM user WHERE name = ?;", (username,), one=True)
 
-    # Executing the query and fetching the result
-    cursor.execute(query, (username,))
-    result = cursor.fetchone()
-    db.close()
-
-    # Checking if there is no result from the query
+    # Checking if there is no account in the database
     if result is None:
         return "No Account"
 
@@ -184,17 +185,10 @@ def user_info():
 # Retrieving user information
 def retrieve_user_info(user):
 
-    # Initialising the database, cursor, and query
-    db = sqlite3.connect(DATABASE)
-    cursor = db.cursor()
-    query = 'select borrow_number from user where name = ?;'
+    # Finding the borrow number of the user
+    borrow_number = query_db("select borrow_number from user where name = ?;", (user,), one=True)
 
-    # Executing the query and fetching the result
-    cursor.execute(query, (user,))
-    borrow_number = cursor.fetchone()[0]
-    db.close()
-
-    return borrow_number 
+    return borrow_number[0] 
     
 # --- Finding books and search handling ---
 
@@ -315,12 +309,10 @@ def checkout():
             return redirect('/checkout')
 
         # Initialising database and cursor
-        db = sqlite3.connect(DATABASE)
-        cursor = db.cursor()
 
         # Checking the existence of each book by iterating each book in the cart
         for book in cart_items:
-            all_IDs = find_IDs_with_cursor(cursor, user, book)
+            all_IDs = find_IDs(user, book)
 
             # If a book does not exist, add it to the failed books list
             if not all_IDs:
@@ -329,15 +321,12 @@ def checkout():
 
             # Inserting the borrow record to the database
             query = "INSERT INTO borrow (user_ID, book_ID, genre_ID, address, borrow_date, borrow_due) VALUES (?, ?, ?, ?, ?, ?);"
-            cursor.execute(query, (all_IDs[0], all_IDs[1], all_IDs[2], address, dates[0], dates[1]))
+            modify_db(query,(all_IDs[0], all_IDs[1], all_IDs[2], address, dates[0], dates[1]))
 
             # Incrementing the borrow_number of the user
             query = "UPDATE user SET borrow_number = borrow_number + 1 WHERE name = ?;"
-            cursor.execute(query, (user,))
+            modify_db(query,(user,))
             
-        db.commit()
-        db.close()
-
         # Checking if there is any non-existent book being inputted by the user
         if len(failed_books) == 0:
             session.pop('cart', None)
@@ -348,16 +337,18 @@ def checkout():
 
     return render_template('checkout.html', return_date=return_date, user=user, cart_items=cart_items, failed_books=failed_books, condition=condition)
 
-# Finding IDs of username and book
-def find_IDs_with_cursor(cursor, username, book):
-    cursor.execute("SELECT ID, genre_ID FROM books WHERE book_name = ?;", (book,))
-    results = cursor.fetchone()
+# Finding IDs of username, book, and genre
+def find_IDs(username, book):
+    results = query_db("SELECT ID, genre_ID FROM books WHERE book_name = ?;", (book,), one=True)
+
+    # Checking if the book exists or not
     if not results:
         return False
+
+    # Checking if the user exist or not    
     try:
         book_ID, genre_ID = results[0], results[1] 
-        cursor.execute("SELECT ID FROM user WHERE name = ?;", (username,))
-        name_ID = cursor.fetchone()[0]
+        name_ID = query_db("SELECT ID FROM user WHERE name = ?;", (username,), one=True)[0]
         return (name_ID, book_ID, genre_ID)
     except Exception:
         return False
@@ -390,41 +381,29 @@ def return_books():
 
 # Return data processing
 def process_return(book, user):
-
-    # Initialising database and cursor
-    db = sqlite3.connect(DATABASE)
-    cursor = db.cursor()
-
-    all_IDs = find_IDs_with_cursor(cursor, user, book)    # Finding the IDs for the user and book
+    all_IDs = find_IDs(user, book)    # Finding the IDs for the user and book
 
     # Checking if all required IDs exist in the database
     if not all_IDs:
-        db.close()
         return 'failed'
     
     user_id, book_id, genre_id = all_IDs
 
     # Checking if the user is currently borrowing this book
-    cursor.execute("SELECT ID FROM borrow WHERE user_ID = ? AND book_ID = ? LIMIT 1;", (user_id, book_id))
-    
-    borrow_record = cursor.fetchone()
+    borrow_record = query_db("SELECT ID FROM borrow WHERE user_ID = ? AND book_ID = ? LIMIT 1;", (user_id, book_id), one=True)
 
     # If book is not borrowed, then the return will fail
     if not borrow_record:
-        db.close()
         return 'no book' # User never borrowed this book or already returned it
         
     borrow_id = borrow_record[0]
 
     # Putting the return detail onto the 'return' table
-    query_return = "INSERT INTO return (user_ID, book_ID, return_date) VALUES (?, ?, ?);"
-    cursor.execute(query_return, (user_id, book_id, clock()[0]))
+    modify_db("INSERT INTO return (user_ID, book_ID, return_date) VALUES (?, ?, ?);", (user_id, book_id, clock()[0]))
     
     # Deleting the old borrow return detail
-    cursor.execute("DELETE FROM borrow WHERE ID = ?;", (borrow_id,))
+    modify_db("DELETE FROM borrow WHERE ID = ?;", (borrow_id,))
 
-    db.commit()
-    db.close()
     return 'after'
 
 # Running the program
