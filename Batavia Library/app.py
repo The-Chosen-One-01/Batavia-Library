@@ -2,6 +2,7 @@
 
 #Importing necessary modules
 from flask import Flask, render_template, redirect, request, session
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
@@ -58,7 +59,7 @@ def add_new_user():
     query = "INSERT INTO user (name, password, borrow_number) VALUES (?, ?, 0);"
 
     # Executing the query of the database and committing it
-    cursor.execute(query, (username, encrypt(password)))
+    cursor.execute(query, (username, hash_password(password)))
     db.commit()
     db.close()
 
@@ -82,12 +83,12 @@ def find_user(user):
     # Checking and returning if the user already exist or not
     return user_data is not None
 
-# Enrypting password for both signing up and logging in
-def encrypt(password):
+# Hashing password for both signing up and logging in
+def hash_password(password):
 
-    # Encrypting the password by increasing the unicode of each character in the password by one
-    encrypted_password = ''.join(chr(ord(i) + 1) for i in password)
-    return encrypted_password
+    # Hashing the password
+    hashed_password = generate_password_hash(password)
+    return hashed_password
 
 # --- Log in and data handling ---
 
@@ -154,7 +155,7 @@ def verification(username, password):
 
     # Checking if the password given is the same as the actual password
     actual_password = result[0]
-    if encrypt(password) == actual_password:
+    if check_password_hash(actual_password, password):
         return True
         
     return "Wrong Information"
