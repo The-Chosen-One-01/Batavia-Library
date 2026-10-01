@@ -332,6 +332,7 @@ def checkout():
         else:
             condition = 'partial_failed'
             session['cart'] = failed_books
+            cart_items = failed_books
 
     return render_template('checkout.html', return_date=return_date, user=user, cart_items=cart_items, failed_books=failed_books, condition=condition)
 
