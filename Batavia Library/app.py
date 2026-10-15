@@ -177,7 +177,7 @@ def user_info():
 
     # Directing the user to homepage if they are not logged in
     if user is None:
-        return redirect('/')
+        return redirect('/log-in')
 
     borrow_number = retrieve_user_info(user)   # Retrieving the amount of books the user has borrowed
     return render_template('profile.html', user=user, borrow_number = borrow_number)
@@ -370,8 +370,8 @@ def return_books():
 
     # Directing the user into homepage if they are not logged in
     if user is None:
-        return redirect('/')
-
+        return redirect('/log-in')
+        
     # Processing the returned books
     if request.method == 'POST':
         book = str(request.form['book'])
