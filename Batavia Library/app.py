@@ -21,7 +21,7 @@ def home():
 
 # --- 404 Error handler (no page is found) ---
 @app.errorhandler(404)
-def page_not_found():
+def page_not_found(e):
     """ Handling 404 error (unavailable address) """
     user = session.get('user')
     return render_template("404_error.html", user=user)
@@ -379,7 +379,7 @@ def find_ids(username, book):
         name_id = query_db("SELECT ID FROM user WHERE name = ?;",
                            (username,), one=True)[0]
         return (name_id, book_id, genre_id)
-    except Exception:
+    except (TypeError, IndexError):
         return False
 
 # Current and return date finder
@@ -421,7 +421,7 @@ def process_return(book, user):
     if not all_ids:
         return 'failed'
 
-    user_id, book_id, genre_id = all_ids
+    user_id, book_id = all_ids
 
     # Checking if the user is currently borrowing this book
     borrow_record = query_db("SELECT ID FROM borrow WHERE user_ID = ? AND book_ID = ? LIMIT 1;",
