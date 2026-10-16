@@ -1,47 +1,51 @@
-# The code below is the flask code of the library
+""" The code below is the flask code of the library """
 
 #Importing necessary modules
+from datetime import datetime, timedelta
+import sqlite3
+from difflib import SequenceMatcher
 from flask import Flask, render_template, redirect, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
-from datetime import datetime, timedelta
-from difflib import SequenceMatcher
-from contextlib import closing
 
 #Initialising constants
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'iamthegoat'
 DATABASE = 'batavia_library.db'
 
-# --- Main app router function --- 
+# --- Main app router function ---
 @app.route('/')
 def home():
+    """ Routing the homepage """
     user = session.get('user')
     return render_template("home.html", user=user)
 
-# --- 404 Error handler (no page is found) --- 
+# --- 404 Error handler (no page is found) ---
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found():
+    """ Handling 404 error (unavailable address) """
     user = session.get('user')
     return render_template("404_error.html", user=user)
 
 
 # --- Database and Query ---
 
-# Connecting to the database
+# Database Connection
 def get_db():
+    """ Connecting to the database """
     db = sqlite3.connect(DATABASE)
     return db
 
-# Running a 'select' query and returning the result(s)
+# "Select" Queries Run
 def query_db(query, inputs=(), one=False):
+    """ Running a 'select' query and returning the result(s) """
     with get_db() as db:
         cursor = db.execute(query, inputs)
         result = cursor.fetchone() if one else cursor.fetchall()
     return result
 
-# Running an 'insert'/'delete'/'update' query and saving it
+# Database Modification
 def modify_db(query, inputs=()):
+    """ Modifying the database using insert/delete/update """
     with get_db() as db:
         db.execute(query, inputs)
         db.commit()
@@ -49,6 +53,7 @@ def modify_db(query, inputs=()):
 # --- About us router ---
 @app.route('/about-us')
 def about_us():
+    """ Routing the About Us page """
     user = session.get('user')
     return render_template("about_us.html", user=user)
 
@@ -59,10 +64,10 @@ def about_us():
 def sign_up():
     return render_template('sign_up.html')
 
-# Adding new user to the database
+# New user addition
 @app.post('/input_new_user')
 def add_new_user():
-    
+    """ Adding new user to the database """
     # Initialising username and password from the submitted field
     username = str(request.form['username'])
     password = str(request.form['password'])
@@ -76,15 +81,16 @@ def add_new_user():
         return render_template('sign_up.html', warning='Password')
 
     # Inserting the new user into the database
-    modify_db("INSERT INTO user (name, password, borrow_number) VALUES (?, ?, 0);", (username, hash_password(password)))
+    modify_db("INSERT INTO user (name, password, borrow_number) VALUES (?, ?, 0);",
+              (username, hash_password(password)))
 
     # Setting the user of this session to the new user, and returning the user back to homepage
     session['user'] = username
     return redirect('/')
 
-# Finding user that has the same username as the new user
+# Other user check
 def find_user(user):
-
+    """ Finding the user that has the same username as the new user """
     # Finding the user that has the same name
     user_data = query_db("SELECT * FROM user WHERE name = ?", (user,), one=True)
 
@@ -93,7 +99,7 @@ def find_user(user):
 
 # Hashing password for both signing up and logging in
 def hash_password(password):
-
+    """ Hashing password for """
     # Hashing the password
     hashed_password = generate_password_hash(password)
     return hashed_password
@@ -120,7 +126,7 @@ def login():
 
             # Returning the user to homepage
             return redirect('/')
-            
+
     return render_template('login.html', warning=result)
 
 # Log in data handling
@@ -158,7 +164,7 @@ def verification(username, password):
     actual_password = result[0]
     if check_password_hash(actual_password, password):
         return True
-        
+
     return "Wrong Information"
 
 # --- Log Out ---
@@ -168,7 +174,7 @@ def logout():
     session.pop('cart', None)    # Removing the cart of the current session
     return redirect('/')
 
-# --- Profile  --- 
+# --- Profile  ---
 
 # Profile page router
 @app.route('/profile')
@@ -179,17 +185,20 @@ def user_info():
     if user is None:
         return redirect('/log-in')
 
-    borrow_number = retrieve_user_info(user)   # Retrieving the amount of books the user has borrowed
+    # Retrieving the amount of books the user has borrowed
+    borrow_number = retrieve_user_info(user)
+
     return render_template('profile.html', user=user, borrow_number = borrow_number)
 
 # Retrieving user information
 def retrieve_user_info(user):
 
     # Finding the borrow number of the user
-    borrow_number = query_db("SELECT borrow_number FROM user WHERE name = ?;", (user,), one=True)
+    borrow_number = query_db("SELECT borrow_number FROM user WHERE name = ?;",
+                             (user,), one=True)
 
-    return borrow_number[0] 
-    
+    return borrow_number[0]
+
 # --- Finding books and search handling ---
 
 # Find book page router
@@ -199,7 +208,7 @@ def find_book():
     found_books = None
     book = None
     failed = None
-    
+
     # Processing the searched book
     if request.method == 'POST':
         book = str(request.form['books'])
@@ -209,23 +218,28 @@ def find_book():
         if not found_books:
             found_books = None
             failed = True
-            
-    return render_template('find_book.html', found_books=found_books, user=user, book=book if request.method == 'POST' else None, failed=failed)
+
+    return render_template('find_book.html',
+                           found_books=found_books, user=user,
+                           book=book if request.method == 'POST' else None, failed=failed)
 
 # Handle search result
 def handle_search_result(book):
 
     # Initialising the database, cursor, query, and database function
     db = sqlite3.connect(DATABASE)
-    db.create_function("SIMILARITY", 2, similarity_ratio)
+    db.create_function("SIMILARITY",
+                       2, similarity_ratio)
     cursor = db.cursor()
-    query = "SELECT books.ID, book_name, author, genre.genre FROM books LEFT JOIN genre ON books.genre_ID = genre.ID WHERE SIMILARITY(book_name, ?) > 0.6;"
+    query = """SELECT books.ID, book_name, author, genre.genre
+            FROM books LEFT JOIN genre ON books.genre_ID = genre.ID
+            WHERE SIMILARITY(book_name, ?) > 0.6;"""
 
     # Executing query and fetching the results
     cursor.execute(query, (book,))
     found_books = cursor.fetchall()
     db.close()
-    
+
     return found_books
 
 # Finding the similarity between the searched book and the actual book
@@ -241,7 +255,7 @@ def similarity_ratio(book1, book2):
     # Checking if the title of either book contains the title of the other book
     if book1 in book2 or book2 in book1:
         return 1.0
-    
+
     return SequenceMatcher(None, book1, book2).ratio()
 
 # --- Cart handling system ---
@@ -253,23 +267,23 @@ def add_to_cart():
     # Directing the user to log in page if they are not logged in
     if 'user' not in session:
         return redirect('/log-in')
-    
+
     book_title = request.form.get('book')
     if book_title:
 
         # Initialising cart as an empty list if cart is not already in session
         if 'cart' not in session:
             session['cart'] = []
-        
+
         cart = session['cart']
 
         # Adding book to cart if the book did not already exist in cart
         if book_title not in cart:
             cart.append(book_title)
             session['cart'] = cart
-            
+
     return redirect('/checkout')
-    
+
 # Removing book from cart
 @app.route('/remove-from-cart/<book_name>')
 def remove_from_cart(book_name):
@@ -280,7 +294,7 @@ def remove_from_cart(book_name):
         if book_name in cart:
             cart.remove(book_name)
             session['cart'] = cart
-            
+
     return redirect('/checkout')
 
 # --- Checkout processing ---
@@ -297,7 +311,7 @@ def checkout():
     # Directing the user to log in page if the user is not logged in
     if user is None:
         return redirect('/log-in')
-        
+
     cart_items = session.get('cart', [])
 
     # Processing the checked out books
@@ -310,21 +324,23 @@ def checkout():
 
         # Checking the existence of each book by iterating each book in the cart
         for book in cart_items:
-            all_IDs = find_IDs(user, book)
+            all_ids = find_ids(user, book)
 
             # If a book does not exist, add it to the failed books list
-            if not all_IDs:
+            if not all_ids:
                 failed_books.append(book)
                 continue
 
             # Inserting the borrow record to the database
-            query = "INSERT INTO borrow (user_ID, book_ID, genre_ID, address, borrow_date, borrow_due) VALUES (?, ?, ?, ?, ?, ?);"
-            modify_db(query,(all_IDs[0], all_IDs[1], all_IDs[2], address, dates[0], dates[1]))
+            query = """INSERT INTO borrow (user_ID, book_ID, genre_ID,
+                    address, borrow_date, borrow_due)
+                    VALUES (?, ?, ?, ?, ?, ?);"""
+            modify_db(query,(all_ids[0], all_ids[1], all_ids[2], address, dates[0], dates[1]))
 
             # Incrementing the borrow_number of the user
             query = "UPDATE user SET borrow_number = borrow_number + 1 WHERE name = ?;"
             modify_db(query,(user,))
-            
+
         # Checking if there is any non-existent book being inputted by the user
         if len(failed_books) == 0:
             session.pop('cart', None)
@@ -334,21 +350,24 @@ def checkout():
             session['cart'] = failed_books
             cart_items = failed_books
 
-    return render_template('checkout.html', return_date=return_date, user=user, cart_items=cart_items, failed_books=failed_books, condition=condition)
+    return render_template('checkout.html', return_date=return_date, user=user,
+                           cart_items=cart_items, failed_books=failed_books, condition=condition)
 
 # Finding IDs of username, book, and genre
-def find_IDs(username, book):
-    results = query_db("SELECT ID, genre_ID FROM books WHERE book_name = ?;", (book,), one=True)
+def find_ids(username, book):
+    results = query_db("SELECT ID, genre_ID FROM books WHERE book_name = ?;",
+                       (book,), one=True)
 
     # Checking if the book exists or not
     if not results:
         return False
 
-    # Checking if the user exist or not    
+    # Checking if the user exist or not
     try:
-        book_ID, genre_ID = results[0], results[1] 
-        name_ID = query_db("SELECT ID FROM user WHERE name = ?;", (username,), one=True)[0]
-        return (name_ID, book_ID, genre_ID)
+        book_id, genre_id = results[0], results[1]
+        name_id = query_db("SELECT ID FROM user WHERE name = ?;",
+                           (username,), one=True)[0]
+        return (name_id, book_id, genre_id)
     except Exception:
         return False
 
@@ -356,7 +375,7 @@ def find_IDs(username, book):
 def clock():
     today = datetime.now()
     a_month = today + timedelta(weeks=4)
-    return (today.strftime("%d-%m-%Y"), a_month.strftime("%d-%m-%Y")) 
+    return (today.strftime("%d-%m-%Y"), a_month.strftime("%d-%m-%Y"))
 
 
 # --- Return processing ---
@@ -371,35 +390,38 @@ def return_books():
     # Directing the user into homepage if they are not logged in
     if user is None:
         return redirect('/log-in')
-        
+
     # Processing the returned books
     if request.method == 'POST':
         book = str(request.form['book'])
         condition = process_return(book, user)
-    return render_template('return.html', user=user, book=book, condition=condition)
+    return render_template('return.html', user=user, book=book,
+                           condition=condition)
 
 # Return data processing
 def process_return(book, user):
-    all_IDs = find_IDs(user, book)    # Finding the IDs for the user and book
+    all_ids = find_ids(user, book)    # Finding the IDs for the user and book
 
     # Checking if all required IDs exist in the database
-    if not all_IDs:
+    if not all_ids:
         return 'failed'
-    
-    user_id, book_id, genre_id = all_IDs
+
+    user_id, book_id, genre_id = all_ids
 
     # Checking if the user is currently borrowing this book
-    borrow_record = query_db("SELECT ID FROM borrow WHERE user_ID = ? AND book_ID = ? LIMIT 1;", (user_id, book_id), one=True)
+    borrow_record = query_db("SELECT ID FROM borrow WHERE user_ID = ? AND book_ID = ? LIMIT 1;",
+                             (user_id, book_id), one=True)
 
     # If book is not borrowed, then the return will fail
     if not borrow_record:
         return 'no book' # User never borrowed this book or already returned it
-        
+
     borrow_id = borrow_record[0]
 
     # Putting the return detail onto the 'return' table
-    modify_db("INSERT INTO return (user_ID, book_ID, return_date) VALUES (?, ?, ?);", (user_id, book_id, clock()[0]))
-    
+    modify_db("INSERT INTO return (user_ID, book_ID, return_date) VALUES (?, ?, ?);",
+              (user_id, book_id, clock()[0]))
+
     # Deleting the old borrow return detail
     modify_db("DELETE FROM borrow WHERE ID = ?;", (borrow_id,))
 
