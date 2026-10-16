@@ -62,6 +62,7 @@ def about_us():
 # Sign up page router
 @app.route('/sign-up')
 def sign_up():
+    """ Routing Sign up page """
     return render_template('sign_up.html')
 
 # New user addition
@@ -97,9 +98,9 @@ def find_user(user):
     # Checking and returning if the user already exist or not
     return user_data is not None
 
-# Hashing password for both signing up and logging in
+# Password hash
 def hash_password(password):
-    """ Hashing password for """
+    """ Hashing password for new user """
     # Hashing the password
     hashed_password = generate_password_hash(password)
     return hashed_password
@@ -109,6 +110,7 @@ def hash_password(password):
 # Log in page router
 @app.route('/log-in', methods=['GET', 'POST'])
 def login():
+    """ Routing Log in page and checking the validity of the log in """
     result = None
 
     # Processing the logged user
@@ -131,7 +133,7 @@ def login():
 
 # Log in data handling
 def handle_login_data(username, password):
-
+    """ Handling log in data by checking if the user does exist and the password is correct """
     # Verifying if the user actually exists
     verify = verification(username, password)
 
@@ -152,7 +154,7 @@ def handle_login_data(username, password):
 
 # Log in data verification
 def verification(username, password):
-
+    """ Verifying the log in data, by finding the username and password from given username """
     # Finding the actual account in the database
     result = query_db("SELECT password FROM user WHERE name = ?;", (username,), one=True)
 
@@ -170,6 +172,7 @@ def verification(username, password):
 # --- Log Out ---
 @app.route('/logout')
 def logout():
+    """ Routing Log out and removing the user's current session """
     session.pop('user', None)    # Removing the user of the current session
     session.pop('cart', None)    # Removing the cart of the current session
     return redirect('/')
@@ -179,6 +182,7 @@ def logout():
 # Profile page router
 @app.route('/profile')
 def user_info():
+    """ Routing profile page """
     user = session.get('user')
 
     # Directing the user to homepage if they are not logged in
@@ -190,9 +194,9 @@ def user_info():
 
     return render_template('profile.html', user=user, borrow_number = borrow_number)
 
-# Retrieving user information
+# User information retrieve
 def retrieve_user_info(user):
-
+    """ Retrieving the borrow number of the user """
     # Finding the borrow number of the user
     borrow_number = query_db("SELECT borrow_number FROM user WHERE name = ?;",
                              (user,), one=True)
@@ -204,6 +208,7 @@ def retrieve_user_info(user):
 # Find book page router
 @app.route('/find-book', methods=['GET', 'POST'])
 def find_book():
+    """ Routing find book and search result page """
     user = session.get('user')
     found_books = None
     book = None
@@ -225,7 +230,8 @@ def find_book():
 
 # Handle search result
 def handle_search_result(book):
-
+    """ Finding the books with the same keyword as given by the user
+    and returning the search results """
     # Initialising the database, cursor, query, and database function
     db = sqlite3.connect(DATABASE)
     db.create_function("SIMILARITY",
@@ -242,9 +248,9 @@ def handle_search_result(book):
 
     return found_books
 
-# Finding the similarity between the searched book and the actual book
+# Similarity function for database
 def similarity_ratio(book1, book2):
-
+    """ Finding the similarity between the keyword given and the actual book """
     # Checking if either input is None
     if not book1 or not book2:
         return 0.0
@@ -260,10 +266,10 @@ def similarity_ratio(book1, book2):
 
 # --- Cart handling system ---
 
-# Adding book to cart
+# Cart addition
 @app.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
-
+    """ Initialising the cart if empty and adding the book to the cart """
     # Directing the user to log in page if they are not logged in
     if 'user' not in session:
         return redirect('/log-in')
@@ -284,9 +290,10 @@ def add_to_cart():
 
     return redirect('/checkout')
 
-# Removing book from cart
+# Cart removal
 @app.route('/remove-from-cart/<book_name>')
 def remove_from_cart(book_name):
+    """ Removing book from cart """
     if 'cart' in session:    # Checking if cart is in session already
         cart = session['cart']
 
@@ -302,6 +309,9 @@ def remove_from_cart(book_name):
 # Checkout router and processing
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
+    """ Routing the checkout page and handling the checkout books by
+    checking if the books in cart exist, inserting the borrow record to database,
+    and increasing the borrow number of the user by the amount of books they borrowed """
     dates = clock()
     return_date = dates[1]
     user = session.get('user')
@@ -353,8 +363,9 @@ def checkout():
     return render_template('checkout.html', return_date=return_date, user=user,
                            cart_items=cart_items, failed_books=failed_books, condition=condition)
 
-# Finding IDs of username, book, and genre
+# IDs search
 def find_ids(username, book):
+    """ Finding the IDs of username, book, and genre """
     results = query_db("SELECT ID, genre_ID FROM books WHERE book_name = ?;",
                        (book,), one=True)
 
@@ -371,8 +382,9 @@ def find_ids(username, book):
     except Exception:
         return False
 
-# Returning current and roughly next month date
+# Current and return date finder
 def clock():
+    """ Returning current and roughly next month date """
     today = datetime.now()
     a_month = today + timedelta(weeks=4)
     return (today.strftime("%d-%m-%Y"), a_month.strftime("%d-%m-%Y"))
@@ -383,6 +395,7 @@ def clock():
 # Return router
 @app.route('/return', methods=['GET', 'POST'])
 def return_books():
+    """ Routing return page """
     user = session.get('user')
     book = None
     condition = 'before'
@@ -400,6 +413,8 @@ def return_books():
 
 # Return data processing
 def process_return(book, user):
+    """ Processing the returned book by checking if the user is currently borrowing the book(s)
+    and deleting the borrow record of the returned book(s) """
     all_ids = find_ids(user, book)    # Finding the IDs for the user and book
 
     # Checking if all required IDs exist in the database
